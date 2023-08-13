@@ -16,6 +16,18 @@ class Tile {
     }
 }
 
+class Unit {
+    constructor(props) {
+        Object.assign(this, props);
+    }
+    createParams() {
+        return {
+            classes: ['unit'],
+            x: this.pos.x * TILE_SIZE,
+            y: this.pos.y * TILE_SIZE,
+        };
+    }
+}
 
 
 class TileMap {
@@ -38,14 +50,6 @@ function updateEl(el, params) {
     // el.innerText = params.text;
 }
 
-function createTileParams(tile) {
-    return {
-        classes: ['tile', tile.terrain],
-        x: tile.pos.x * TILE_SIZE, 
-        y: tile.pos.y * TILE_SIZE, 
-        text: `${tile.pos.x}, ${tile.pos.y}`,
-    };
-}
 
 const $div = () => document.createElement('div');
 
@@ -84,6 +88,11 @@ for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
         updateObject(map.get({x, y}));
     }
+}
+
+for (let i = 0; i < 2; i++) {
+    const unit = new Unit({pos: {x: i + 2, y: 3}, classes: ['soldier']});
+    updateObject(unit);
 }
 
 setTimeout(() => {
