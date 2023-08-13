@@ -42,6 +42,7 @@ function updateTile(pos, f = _ => {}) {
     const tile = map.get(pos);
     if (!tile.el) {
         tile.el = document.createElement('div');
+        tile.el.__tile = tile;
         domEl.append(tile.el);
     }
     f(tile);
@@ -71,3 +72,7 @@ setTimeout(() => {
         tile.terrain = 'water';
     });
 }, 1000);
+
+domEl.addEventListener('click', e => {
+    alert(e.target.__tile.terrain)
+});
