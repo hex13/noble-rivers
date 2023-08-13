@@ -23,17 +23,32 @@ class TileMap {
     }
 }
 
-function El(params) {
-    const el = document.createElement('div');
-    updateEl(el, params);
-    return el;
-}
-
 function updateEl(el, params) {
     el.className = params.classes.join(' ');
     el.style.transform = `translate(${params.x}px, ${params.y}px)`;
     el.innerText = params.text;
 }
+
+function createTileParams(tile) {
+    return {
+        classes: ['tile', tile.terrain],
+        x: tile.pos.x * TILE_SIZE, 
+        y: tile.pos.y * TILE_SIZE, 
+        text: `${tile.pos.x}, ${tile.pos.y}`,
+    };
+}
+
+function updateTile(pos, f = _ => {}) {
+    const tile = map.get(pos);
+    if (!tile.el) {
+        tile.el = document.createElement('div');
+        domEl.append(tile.el);
+    }
+    f(tile);
+    updateEl(tile.el, createTileParams(tile));
+}
+
+
 
 const map = new TileMap(10, 10);
 
@@ -47,13 +62,12 @@ const domEl = document.getElementById('app');
 
 for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
-        const { terrain } = map.get({x, y});
-        const params = {
-            classes: ['tile', terrain], 
-            x: x * TILE_SIZE, 
-            y: y * TILE_SIZE, 
-            text: `${x}, ${y}`,
-        }
-        domEl.append(El(params));
+        updateTile({x, y});
     }
 }
+
+setTimeout(() => {
+    updateTile({x: 4, y: 6}, tile =>{
+        tile.terrain = 'water';
+    });
+}, 1000);
