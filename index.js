@@ -45,9 +45,11 @@ function updateTile(tile, f = _ => {}) {
         tile.el = $div();
         tile.el.__tile = tile;
 
-        const token = $div();
-        token.className = 'token';
-        tile.el.append(token);
+        if (tile.token) {
+            const token = $div();
+            token.className = 'token';
+            tile.el.append(token);
+        }
 
         domEl.append(tile.el);
     }
@@ -64,7 +66,7 @@ map.get({x: 4, y: 3}).terrain = 'water';
 map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
 
-map.get({x: 6, y: 6}).isToken = true;
+map.get({x: 6, y: 6}).token = true;
 console.log(map)
 
 const domEl = document.getElementById('app');
