@@ -6,6 +6,7 @@ class Tile {
         this.terrain = 'grass';
         this.pos = {...pos};
         this.item = false;
+        this.progress = 0;
     }
     createParams() {
         const classes = ['tile'];
@@ -18,6 +19,7 @@ class Tile {
             x: this.pos.x * TILE_SIZE,
             y: this.pos.y * TILE_SIZE,
             text: `${this.pos.x}, ${this.pos.y}`,
+            progress: this.progress,
         };
     }
 }
@@ -57,6 +59,9 @@ class TileMap {
 function updateEl(el, params) {
     el.className = params.classes.join(' ');
     el.style.transform = `translate(${params.x}px, ${params.y}px)`;
+    if (el.__buildingEl) {
+        el.__buildingEl.style.height = `${~~((params.progress / 100) * 50)}px`;
+    }
     // el.innerText = params.text;
 }
 
@@ -74,6 +79,14 @@ function updateObject(obj, f = _ => {}) {
             obj.el.append(token);
         }
 
+        if (Object.hasOwn(obj, 'progress')) {
+            console.log("o", obj)
+            const el = $div();
+            el.className = 'building';
+            obj.el.appendChild(el);
+            obj.el.__buildingEl = el;
+        }        
+
         domEl.append(obj.el);
     }
     f(obj);
@@ -88,6 +101,9 @@ map.get({x: 3, y: 3}).terrain = 'forest';
 map.get({x: 4, y: 3}).terrain = 'water';
 map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
+map.get({x: 1, y: 1}).progress = 10;
+map.get({x: 2, y: 1}).progress = 50;
+map.get({x: 3, y: 1}).progress = 100;
 map.get({x: 4, y: 5}).item = true;
 
 map.get({x: 6, y: 6}).token = true;
@@ -139,7 +155,11 @@ const keyMap = {
         if (!obj.item) return;
         obj.item = false;
         updateObject(map.get(obj.pos), tile => {
-            tile.item = true;
+            if (tile.progress) {
+                tile.progress += 10;
+            } else {
+                tile.item = true;
+            }
         });
     }
 };
