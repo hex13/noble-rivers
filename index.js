@@ -74,5 +74,8 @@ setTimeout(() => {
 }, 1000);
 
 domEl.addEventListener('click', e => {
-    alert(e.target.__tile.terrain)
+    updateTile(e.target.__tile.pos, tile => {
+        tile.terrain = 'water';
+    });
+    // alert(e.target.__tile.terrain)
 });
