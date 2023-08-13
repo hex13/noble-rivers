@@ -90,9 +90,11 @@ for (let y = 0; y < map.height; y++) {
     }
 }
 
+const units = [];
 for (let i = 0; i < 2; i++) {
     const unit = new Unit({pos: {x: i + 2, y: 3}, classes: ['soldier']});
     updateObject(unit);
+    units.push(unit);
 }
 
 setTimeout(() => {
@@ -108,3 +110,22 @@ domEl.addEventListener('click', e => {
     });
     // alert(e.target.__tile.terrain)
 });
+
+const keyMap = {
+    ArrowLeft: {x: -1, y: 0},
+    ArrowRight: {x: 1, y: 0},
+    ArrowUp: {x: 0, y: -1},
+    ArrowDown: {x: 0, y: 1},
+};
+
+document.addEventListener('keydown', e => {
+    if (Object.hasOwn(keyMap, e.code)) {
+        const d = keyMap[e.code];
+        console.log("====", e.code, d)
+        updateObject(units[0], obj => {
+            obj.pos.x += d.x;
+            obj.pos.y += d.y;
+        });
+    }
+});
+
