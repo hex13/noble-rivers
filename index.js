@@ -1,6 +1,6 @@
 console.log("Noble Rivers");
 
-const TILE_SIZE = 32;
+const TILE_SIZE = 64;
 class Tile {
     constructor(pos) {
         this.terrain = 'grass';
