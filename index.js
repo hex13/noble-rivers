@@ -2,8 +2,9 @@ console.log("Noble Rivers");
 
 const TILE_SIZE = 32;
 class Tile {
-    constructor() {
+    constructor(pos) {
         this.terrain = 'grass';
+        this.pos = {...pos};
     }
 }
 
@@ -12,7 +13,7 @@ class TileMap {
     constructor(w, h) {
         this.width = w;
         this.height = h;
-        this.data = [...Array(w * h)].map(() => new Tile());
+        this.data = [...Array(w * h)].map((_, i) => new Tile({x: i % w, y: ~~(i / w)}));
     }
     getIndex(pos) {
         return pos.y * this.width + pos.x;
