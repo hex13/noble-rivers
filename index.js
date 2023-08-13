@@ -40,8 +40,7 @@ function createTileParams(tile) {
 
 const $div = () => document.createElement('div');
 
-function updateTile(pos, f = _ => {}) {
-    const tile = map.get(pos);
+function updateTile(tile, f = _ => {}) {
     if (!tile.el) {
         tile.el = $div();
         tile.el.__tile = tile;
@@ -72,19 +71,19 @@ const domEl = document.getElementById('app');
 
 for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
-        updateTile({x, y});
+        updateTile(map.get({x, y}));
     }
 }
 
 setTimeout(() => {
-    updateTile({x: 4, y: 6}, tile =>{
+    updateTile(map.get({x: 4, y: 6}), tile =>{
         tile.terrain = 'water';
     });
 }, 1000);
 
 domEl.addEventListener('click', e => {
     const el = e.target.closest('.tile');
-    updateTile(el.__tile.pos, tile => {
+    updateTile(map.get(el.__tile.pos), tile => {
         tile.terrain = 'water';
     });
     // alert(e.target.__tile.terrain)
