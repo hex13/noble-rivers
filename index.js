@@ -5,10 +5,16 @@ class Tile {
     constructor(pos) {
         this.terrain = 'grass';
         this.pos = {...pos};
+        this.item = false;
     }
     createParams() {
+        const classes = ['tile'];
+        classes.push(this.terrain);
+        if (this.item) {
+            classes.push('has-item');
+        }
         return {
-            classes: ['tile', this.terrain],
+            classes,
             x: this.pos.x * TILE_SIZE,
             y: this.pos.y * TILE_SIZE,
             text: `${this.pos.x}, ${this.pos.y}`,
@@ -21,8 +27,12 @@ class Unit {
         Object.assign(this, props);
     }
     createParams() {
+        const classes = ['unit'];
+        if (this.item) {
+            classes.push('has-item');
+        }
         return {
-            classes: ['unit'],
+            classes,
             x: this.pos.x * TILE_SIZE,
             y: this.pos.y * TILE_SIZE,
         };
@@ -78,6 +88,7 @@ map.get({x: 3, y: 3}).terrain = 'forest';
 map.get({x: 4, y: 3}).terrain = 'water';
 map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
+map.get({x: 4, y: 5}).item = true;
 
 map.get({x: 6, y: 6}).token = true;
 console.log(map)
@@ -116,16 +127,35 @@ const keyMap = {
     ArrowRight: {x: 1, y: 0},
     ArrowUp: {x: 0, y: -1},
     ArrowDown: {x: 0, y: 1},
+    KeyT(obj) {
+        const tile = map.get(obj.pos);
+        if (!tile.item) return;
+        obj.item = true;
+        updateObject(tile, tile => {
+            tile.item = false;
+        });
+    },
+    KeyD(obj) {
+        if (!obj.item) return;
+        obj.item = false;
+        updateObject(map.get(obj.pos), tile => {
+            tile.item = true;
+        });
+    }
 };
 
 document.addEventListener('keydown', e => {
+    console.log("--", e.code)
     if (Object.hasOwn(keyMap, e.code)) {
-        const d = keyMap[e.code];
-        console.log("====", e.code, d)
-        updateObject(units[0], obj => {
-            obj.pos.x += d.x;
-            obj.pos.y += d.y;
-        });
+        let updater = keyMap[e.code];
+        if (typeof updater != 'function') {
+            const d = updater;
+            updater = obj => {
+                obj.pos.x += d.x;
+                obj.pos.y += d.y;
+            };
+        }
+        updateObject(units[0], updater);
     }
 });
 
