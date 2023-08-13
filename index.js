@@ -26,7 +26,7 @@ class TileMap {
 function updateEl(el, params) {
     el.className = params.classes.join(' ');
     el.style.transform = `translate(${params.x}px, ${params.y}px)`;
-    el.innerText = params.text;
+    // el.innerText = params.text;
 }
 
 function createTileParams(tile) {
@@ -38,11 +38,18 @@ function createTileParams(tile) {
     };
 }
 
+const $div = () => document.createElement('div');
+
 function updateTile(pos, f = _ => {}) {
     const tile = map.get(pos);
     if (!tile.el) {
-        tile.el = document.createElement('div');
+        tile.el = $div();
         tile.el.__tile = tile;
+
+        const token = $div();
+        token.className = 'token';
+        tile.el.append(token);
+
         domEl.append(tile.el);
     }
     f(tile);
@@ -57,6 +64,8 @@ map.get({x: 3, y: 3}).terrain = 'forest';
 map.get({x: 4, y: 3}).terrain = 'water';
 map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
+
+map.get({x: 6, y: 6}).isToken = true;
 console.log(map)
 
 const domEl = document.getElementById('app');
@@ -74,7 +83,8 @@ setTimeout(() => {
 }, 1000);
 
 domEl.addEventListener('click', e => {
-    updateTile(e.target.__tile.pos, tile => {
+    const el = e.target.closest('.tile');
+    updateTile(el.__tile.pos, tile => {
         tile.terrain = 'water';
     });
     // alert(e.target.__tile.terrain)
