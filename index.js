@@ -6,7 +6,16 @@ class Tile {
         this.terrain = 'grass';
         this.pos = {...pos};
     }
+    createParams() {
+        return {
+            classes: ['tile', this.terrain],
+            x: this.pos.x * TILE_SIZE,
+            y: this.pos.y * TILE_SIZE,
+            text: `${this.pos.x}, ${this.pos.y}`,
+        };
+    }
 }
+
 
 
 class TileMap {
@@ -40,21 +49,21 @@ function createTileParams(tile) {
 
 const $div = () => document.createElement('div');
 
-function updateTile(tile, f = _ => {}) {
-    if (!tile.el) {
-        tile.el = $div();
-        tile.el.__tile = tile;
+function updateObject(obj, f = _ => {}) {
+    if (!obj.el) {
+        obj.el = $div();
+        obj.el.__obj = obj;
 
-        if (tile.token) {
+        if (obj.token) {
             const token = $div();
             token.className = 'token';
-            tile.el.append(token);
+            obj.el.append(token);
         }
 
-        domEl.append(tile.el);
+        domEl.append(obj.el);
     }
-    f(tile);
-    updateEl(tile.el, createTileParams(tile));
+    f(obj);
+    updateEl(obj.el, obj.createParams());
 }
 
 
@@ -73,19 +82,19 @@ const domEl = document.getElementById('app');
 
 for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
-        updateTile(map.get({x, y}));
+        updateObject(map.get({x, y}));
     }
 }
 
 setTimeout(() => {
-    updateTile(map.get({x: 4, y: 6}), tile =>{
+    updateObject(map.get({x: 4, y: 6}), tile =>{
         tile.terrain = 'water';
     });
 }, 1000);
 
 domEl.addEventListener('click', e => {
     const el = e.target.closest('.tile');
-    updateTile(map.get(el.__tile.pos), tile => {
+    updateObject(map.get(el.__obj.pos), tile => {
         tile.terrain = 'water';
     });
     // alert(e.target.__tile.terrain)
