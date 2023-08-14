@@ -107,6 +107,12 @@ class TileMap {
     get(pos) {
         return this.data[this.getIndex(pos)];
     }
+    locate(center, maxRadius, check) {
+        for (const pt of radiate(center, maxRadius)) {
+            const tile = this.get(pt);
+            if (check(tile)) return tile;
+        }
+    }
 }
 
 function updateEl(el, params) {
