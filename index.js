@@ -49,11 +49,12 @@ class Unit {
     }
     take() {
         const tile = map.get(this.pos);
-        if (!tile.item) return;
+        if (!tile.item) return false;
         this.item = true;
         updateObject(tile, tile => {
             tile.item = false;
         });
+        return true;
     }
     drop() {
         if (!this.item) return;
@@ -244,7 +245,9 @@ setInterval(() => {
                 npc.pos.x = newX;
                 npc.pos.y = newY;
             }
-            npc.take();
+            if (!npc.take()) {
+                npc.drop();
+            }
         });
     });
 }, 1000);
