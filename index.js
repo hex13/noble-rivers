@@ -47,6 +47,25 @@ class Unit {
         this.v = {x: 0, y: 0};
         Object.assign(this, props);
     }
+    take() {
+        const tile = map.get(this.pos);
+        if (!tile.item) return;
+        this.item = true;
+        updateObject(tile, tile => {
+            tile.item = false;
+        });
+    }
+    drop() {
+        if (!this.item) return;
+        this.item = false;
+        updateObject(map.get(this.pos), tile => {
+            if (tile.progress) {
+                tile.progress += 10;
+            } else {
+                tile.item = true;
+            }
+        });
+    }
     createParams() {
         const classes = ['unit'];
         if (this.item) {
@@ -176,23 +195,10 @@ const keyMap = {
     ArrowUp: {x: 0, y: -1},
     ArrowDown: {x: 0, y: 1},
     KeyT(obj) {
-        const tile = map.get(obj.pos);
-        if (!tile.item) return;
-        obj.item = true;
-        updateObject(tile, tile => {
-            tile.item = false;
-        });
+        obj.take();
     },
     KeyD(obj) {
-        if (!obj.item) return;
-        obj.item = false;
-        updateObject(map.get(obj.pos), tile => {
-            if (tile.progress) {
-                tile.progress += 10;
-            } else {
-                tile.item = true;
-            }
-        });
+        obj.drop();
     }
 };
 
@@ -238,13 +244,7 @@ setInterval(() => {
                 npc.pos.x = newX;
                 npc.pos.y = newY;
             }
-            const tile = map.get(npc.pos);
-            if (tile.item) {
-                npc.item = true;
-                updateObject(tile, tile => {
-                    tile.item = false;
-                });
-            }
+            npc.take();
         });
     });
 }, 1000);
