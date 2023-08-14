@@ -32,6 +32,14 @@ class Tile {
             this.progress = 100;
         }
     }
+    // gameplay doesn't have to be turn based
+    // but internally turns are responsible for tile events
+    // like producing resources
+    turn() {
+        if (this.building) {
+            this.item = true;
+        }
+    }
 }
 
 class Unit {
@@ -198,3 +206,12 @@ document.addEventListener('keydown', e => {
     }
 });
 
+setInterval(() => {
+    for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+            updateObject(map.get({x, y}), tile => {
+                tile.turn();
+            });
+        }
+    }
+}, 3000);
