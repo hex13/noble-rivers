@@ -244,9 +244,9 @@ setInterval(() => {
             if (ok) {
                 npc.pos.x = newX;
                 npc.pos.y = newY;
-            }
-            if (!npc.take()) {
-                npc.drop();
+                if (!npc.take()) {
+                    npc.drop();
+                }
             }
         });
     });
