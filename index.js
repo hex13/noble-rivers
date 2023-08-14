@@ -160,8 +160,6 @@ map.get({x: 4, y: 3}).terrain = 'water';
 map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
 map.get({x: 1, y: 1}).progress = 10;
-map.get({x: 2, y: 1}).progress = 50;
-map.get({x: 2, y: 1}).building = 'farm';
 map.get({x: 8, y: 3}).building = 'farm';
 map.get({x: 8, y: 3}).progress = 100;
 
@@ -184,13 +182,6 @@ function* border(center, radius) {
 }
 
 
-setInterval(() => {
-    updateObject(map.get({x: 2, y: 1}), tile => {
-        tile.build(6);
-    });
-}, 300);
-map.get({x: 3, y: 1}).progress = 100;
-map.get({x: 3, y: 1}).building = 'woodcutter';
 map.get({x: 4, y: 5}).item = true;
 
 map.get({x: 6, y: 6}).token = true;
