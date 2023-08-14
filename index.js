@@ -22,6 +22,12 @@ class Tile {
             progress: this.progress,
         };
     }
+    build(amount) {
+        this.progress += amount;
+        if (this.progress > 100) {
+            this.progress = 100;
+        }
+    }
 }
 
 class Unit {
@@ -103,6 +109,12 @@ map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
 map.get({x: 1, y: 1}).progress = 10;
 map.get({x: 2, y: 1}).progress = 50;
+
+setInterval(() => {
+    updateObject(map.get({x: 2, y: 1}), tile => {
+        tile.build(10);
+    });
+}, 100);
 map.get({x: 3, y: 1}).progress = 100;
 map.get({x: 4, y: 5}).item = true;
 
