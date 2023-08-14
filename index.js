@@ -1,5 +1,9 @@
 console.log("Noble Rivers");
 
+const sleep = t => new Promise(r => {
+    setTimeout(r, t);
+});
+
 const TILE_SIZE = 64;
 class Tile {
     constructor(pos) {
