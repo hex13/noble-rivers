@@ -44,6 +44,7 @@ class Tile {
 
 class Unit {
     constructor(props) {
+        this.v = {x: 0, y: 0};
         Object.assign(this, props);
     }
     createParams() {
@@ -151,6 +152,10 @@ for (let i = 0; i < 2; i++) {
     units.push(unit);
 }
 
+const npcs = [
+    units[1]
+];
+
 setTimeout(() => {
     updateObject(map.get({x: 4, y: 6}), tile =>{
         tile.terrain = 'water';
@@ -215,3 +220,31 @@ setInterval(() => {
         }
     }
 }, 3000);
+
+npcs.forEach(npc => {
+    npc.v.x = 1;
+});
+setInterval(() => {
+    npcs.forEach(npc => {
+        updateObject(npc, npc => {
+            const newX = npc.pos.x + npc.v.x;
+            const newY = npc.pos.y + npc.v.y;
+            let ok = true;
+            if (newX >= map.width || newX < 0) {
+                ok = false;
+                npc.v.x *= -1;
+            } 
+            if (ok) {
+                npc.pos.x = newX;
+                npc.pos.y = newY;
+            }
+            const tile = map.get(npc.pos);
+            if (tile.item) {
+                npc.item = true;
+                updateObject(tile, tile => {
+                    tile.item = false;
+                });
+            }
+        });
+    });
+}, 1000);
