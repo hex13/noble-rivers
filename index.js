@@ -110,7 +110,7 @@ class TileMap {
     locate(center, maxRadius, check) {
         for (const pt of radiate(center, maxRadius)) {
             const tile = this.get(pt);
-            if (check(tile)) return tile;
+            if (tile && check(tile)) return tile;
         }
     }
 }
