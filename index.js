@@ -148,7 +148,7 @@ function updateObject(obj, f = _ => {}) {
 
 
 
-const map = new TileMap(10, 10);
+const map = new TileMap(20, 20);
 
 map.get({x: 3, y: 3}).terrain = 'forest';
 map.get({x: 4, y: 3}).terrain = 'water';
