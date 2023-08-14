@@ -289,14 +289,6 @@ setInterval(() => {
 
                     break;
                 }
-                case 'returning': {
-                    npc.approach({x: 0, y: 3});
-                    if (npc.v.x == 0 && npc.v.y == 0) {
-                        npc.state = undefined;
-                        npc.v.x = 1;
-                    }
-                    break;
-                }
                 default: {
                     const target = map.locate(npc.pos, 10, tile => tile.item);
                     if (target) {
