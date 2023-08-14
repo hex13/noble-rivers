@@ -215,11 +215,19 @@ setTimeout(() => {
     });
 }, 1000);
 
+function *radiate(center, maxRadius) {
+    for (let r = 1; r < maxRadius; r++) {
+        for (const pt of border(center, r)) {
+            yield pt;
+        }
+    }
+}
+
 domEl.addEventListener('click', async e => {
     const el = e.target.closest('.tile');
     const pos = el.__obj.pos;
 
-    for (const pt of border(pos, 1)) {
+    for (const pt of radiate(pos, 4)) {
         await sleep(50);
         updateObject(map.get(pt), tile => {
             tile.terrain = 'water';
