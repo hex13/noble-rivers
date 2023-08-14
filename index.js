@@ -160,6 +160,23 @@ map.get({x: 2, y: 1}).building = 'farm';
 map.get({x: 8, y: 3}).building = 'farm';
 map.get({x: 8, y: 3}).progress = 100;
 
+function* border(center, radius) {
+    let x = center.x - radius;
+    let y = center.y - radius;
+    let dx = 1;
+    let dy = 0;
+    const max = (radius * 2 + 1) * 4 - 4;
+    for (let i = 0; i < max; i++) {
+        yield {x, y};
+        if (i > 0 && i % (max / 4) == 0) {
+            const tmp = dx;
+            dx = -dy;
+            dy = tmp;
+        }
+        x += dx;
+        y += dy;
+    }
+}
 
 
 setInterval(() => {
@@ -199,12 +216,20 @@ setTimeout(() => {
     });
 }, 1000);
 
-domEl.addEventListener('click', e => {
+domEl.addEventListener('click', async e => {
     const el = e.target.closest('.tile');
-    updateObject(map.get(el.__obj.pos), tile => {
+    const pos = el.__obj.pos;
+
+    for (const pt of border(pos, 1)) {
+        await sleep(50);
+        updateObject(map.get(pt), tile => {
+            tile.terrain = 'water';
+        });
+    }
+
+    updateObject(map.get(pos), tile => {
         tile.terrain = 'water';
     });
-    // alert(e.target.__tile.terrain)
 });
 
 const keyMap = {
