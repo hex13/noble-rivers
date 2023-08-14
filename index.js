@@ -67,6 +67,16 @@ class Unit {
             }
         });
     }
+    approach(target) {
+        const npc = this;
+        const deltaX = target.x - npc.pos.x;
+        const deltaY = target.y - npc.pos.y;
+        const horizontal = Math.abs(deltaX) > Math.abs(deltaY);
+        npc.v = {
+            x: horizontal? Math.sign(deltaX) : 0,
+            y: horizontal? 0 : Math.sign(deltaY),
+        };
+    }
     createParams() {
         const classes = ['unit'];
         if (this.item) {
@@ -143,6 +153,9 @@ map.get({x: 4, y: 5}).terrain = 'water';
 map.get({x: 1, y: 1}).progress = 10;
 map.get({x: 2, y: 1}).progress = 50;
 map.get({x: 2, y: 1}).building = 'farm';
+map.get({x: 8, y: 3}).building = 'farm';
+map.get({x: 8, y: 3}).progress = 100;
+
 
 
 setInterval(() => {
@@ -234,6 +247,31 @@ npcs.forEach(npc => {
 setInterval(() => {
     npcs.forEach(npc => {
         updateObject(npc, npc => {
+            switch (npc.state) {
+                case 'bearing': {
+                    npc.approach({x: 1, y: 1});
+                    if (npc.v.x == 0 && npc.v.y == 0) {
+                        npc.drop();
+                        npc.state = 'returning';
+                    }
+
+                    break;
+                }
+                case 'returning': {
+                    npc.approach({x: 0, y: 3});
+                    if (npc.v.x == 0 && npc.v.y == 0) {
+                        npc.state = undefined;
+                        npc.v.x = 1;
+                    }
+                    break;
+                }
+                default: {
+                    if (npc.take()) {
+                        npc.state = 'bearing'
+                    }
+
+                }
+            }
             const newX = npc.pos.x + npc.v.x;
             const newY = npc.pos.y + npc.v.y;
             let ok = true;
@@ -244,10 +282,7 @@ setInterval(() => {
             if (ok) {
                 npc.pos.x = newX;
                 npc.pos.y = newY;
-                if (!npc.take()) {
-                    npc.drop();
-                }
             }
         });
     });
-}, 1000);
+}, 800);
