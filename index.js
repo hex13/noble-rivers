@@ -237,13 +237,12 @@ domEl.addEventListener('click', async e => {
         tile.terrain = 'water';
     });
 
-    for (const pt of radiate(pos, 4)) {
-        await sleep(50);
-        updateObject(map.get(pt), tile => {
-            tile.terrain = 'water';
-        });
+    const targetTile = map.locate(pos, 4, tile => tile.item);
+    if (targetTile) {
+        updateObject(targetTile, tile => {
+            tile.terrain = 'forest';
+        })
     }
-
 });
 
 const keyMap = {
@@ -281,7 +280,7 @@ setInterval(() => {
             });
         }
     }
-}, 3000);
+}, 6000);
 
 npcs.forEach(npc => {
     npc.v.x = 1;
@@ -294,7 +293,7 @@ setInterval(() => {
                     npc.approach({x: 1, y: 1});
                     if (npc.v.x == 0 && npc.v.y == 0) {
                         npc.drop();
-                        npc.state = 'returning';
+                        npc.state = '';
                     }
 
                     break;
@@ -308,6 +307,10 @@ setInterval(() => {
                     break;
                 }
                 default: {
+                    const target = map.locate(npc.pos, 10, tile => tile.item);
+                    if (target) {
+                        npc.approach(target.pos);
+                    }
                     if (npc.take()) {
                         npc.state = 'bearing'
                     }
