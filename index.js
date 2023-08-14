@@ -133,7 +133,6 @@ function updateObject(obj, f = _ => {}) {
         }
 
         if (Object.hasOwn(obj, 'progress')) {
-            console.log("o", obj)
             const el = $div();
             el.className = 'building';
             obj.el.appendChild(el);
@@ -246,7 +245,6 @@ const keyMap = {
 };
 
 document.addEventListener('keydown', e => {
-    console.log("--", e.code)
     if (Object.hasOwn(keyMap, e.code)) {
         let updater = keyMap[e.code];
         if (typeof updater != 'function') {
