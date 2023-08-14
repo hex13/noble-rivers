@@ -227,6 +227,10 @@ domEl.addEventListener('click', async e => {
     const el = e.target.closest('.tile');
     const pos = el.__obj.pos;
 
+    updateObject(map.get(pos), tile => {
+        tile.terrain = 'water';
+    });
+
     for (const pt of radiate(pos, 4)) {
         await sleep(50);
         updateObject(map.get(pt), tile => {
@@ -234,9 +238,6 @@ domEl.addEventListener('click', async e => {
         });
     }
 
-    updateObject(map.get(pos), tile => {
-        tile.terrain = 'water';
-    });
 });
 
 const keyMap = {
