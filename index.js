@@ -44,7 +44,7 @@ class Tile {
     turn() {
         if (this.building) {
             this.item = true;
-            this.token = 'gold';
+            this.token = Math.random() < 0.5? 'gold' : 'wood';
         }
     }
 }
@@ -57,22 +57,24 @@ class Unit {
     take() {
         const tile = map.get(this.pos);
         if (!tile.item) return false;
-        this.item = true;
+        this.item = tile.token;
         updateObject(tile, tile => {
             tile.item = false;
+            tile.token = '';
         });
         return true;
     }
     drop() {
         if (!this.item) return;
-        this.item = false;
         updateObject(map.get(this.pos), tile => {
             if (tile.progress) {
                 tile.progress += 10;
             } else {
                 tile.item = true;
+                tile.token = this.item;
             }
         });
+        this.item = false;
     }
     approach(target) {
         const npc = this;
