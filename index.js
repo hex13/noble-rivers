@@ -12,6 +12,7 @@ class Tile {
         this.item = false;
         this.progress = 0;
         this.building = '';
+        this.token = '';
     }
     createParams() {
         const classes = ['tile'];
@@ -28,6 +29,7 @@ class Tile {
             y: this.pos.y * TILE_SIZE,
             text: `${this.pos.x}, ${this.pos.y}`,
             progress: this.progress,
+            token: this.token,
         };
     }
     build(amount) {
@@ -42,6 +44,7 @@ class Tile {
     turn() {
         if (this.building) {
             this.item = true;
+            this.token = 'gold';
         }
     }
 }
@@ -121,6 +124,10 @@ function updateEl(el, params) {
     if (el.__buildingEl) {
         el.__buildingEl.style.height = `${~~((params.progress / 100) * 50)}px`;
     }
+    if (el.__token) {
+        el.__token.className = params.token? `token ${params.token}` : '';
+    }
+
     // el.innerText = params.text;
 }
 
@@ -132,10 +139,10 @@ function updateObject(obj, f = _ => {}) {
         obj.el = $div();
         obj.el.__obj = obj;
 
-        if (obj.token) {
+        if (Object.hasOwn(obj, 'token')) {
             const token = $div();
-            token.className = `token ${obj.token}`;
             obj.el.append(token);
+            obj.el.__token = token;
         }
 
         if (Object.hasOwn(obj, 'progress')) {
