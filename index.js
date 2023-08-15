@@ -64,7 +64,7 @@ class Unit {
     }
     take() {
         const tile = map.get(this.pos);
-        if (!tile.item) return false;
+        if (!tile || !tile.item) return false;
         this.item = tile.token;
         updateObject(tile, tile => {
             tile.item = false;
