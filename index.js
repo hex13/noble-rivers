@@ -143,16 +143,24 @@ function updateEl(el, params) {
 
 const $div = () => document.createElement('div');
 
-const npcs = [];
 class Game {
+    constructor({ onUpdateNpc }) {
+        this.npcs = [];
+        this.onUpdateNpc = onUpdateNpc;
+    }
     createNpc(pos) {
         const unit = new Unit({pos, classes: ['soldier']});
         updateObject(unit);
-        npcs.push(unit);
+        this.npcs.push(unit);
+    }
+    updateAi() {
+        this.npcs.forEach(npc => {
+            updateObject(npc, this.onUpdateNpc);
+        });
     }
 }
 
-const game = new Game();
+const game = new Game({ onUpdateNpc });
 
 function updateObject(obj, f = _ => {}) {
     if (!obj.el) {
@@ -331,41 +339,42 @@ setInterval(() => {
     }
 }, 6000);
 
+
+function onUpdateNpc(npc) {
+    switch (npc.state) {
+        case 'bearing': {
+            npc.approach({x: 1, y: 1});
+            if (npc.v.x == 0 && npc.v.y == 0) {
+                npc.drop();
+                npc.state = '';
+            }
+
+            break;
+        }
+        default: {
+            const target = map.locate(npc.pos, 10, tile => tile.item);
+            if (target) {
+                npc.approach(target.pos);
+            }
+            if (npc.take()) {
+                npc.state = 'bearing'
+            }
+
+        }
+    }
+    const newX = npc.pos.x + npc.v.x;
+    const newY = npc.pos.y + npc.v.y;
+    let ok = true;
+    if (newX >= map.width || newX < 0) {
+        ok = false;
+        npc.v.x *= -1;
+    }
+    if (ok) {
+        npc.pos.x = newX;
+        npc.pos.y = newY;
+    }
+}
+
 setInterval(() => {
-    npcs.forEach(npc => {
-        updateObject(npc, npc => {
-            switch (npc.state) {
-                case 'bearing': {
-                    npc.approach({x: 1, y: 1});
-                    if (npc.v.x == 0 && npc.v.y == 0) {
-                        npc.drop();
-                        npc.state = '';
-                    }
-
-                    break;
-                }
-                default: {
-                    const target = map.locate(npc.pos, 10, tile => tile.item);
-                    if (target) {
-                        npc.approach(target.pos);
-                    }
-                    if (npc.take()) {
-                        npc.state = 'bearing'
-                    }
-
-                }
-            }
-            const newX = npc.pos.x + npc.v.x;
-            const newY = npc.pos.y + npc.v.y;
-            let ok = true;
-            if (newX >= map.width || newX < 0) {
-                ok = false;
-                npc.v.x *= -1;
-            } 
-            if (ok) {
-                npc.pos.x = newX;
-                npc.pos.y = newY;
-            }
-        });
-    });
+    game.updateAi();
 }, 800);
