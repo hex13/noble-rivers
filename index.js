@@ -141,8 +141,18 @@ function updateEl(el, params) {
     // el.innerText = params.text;
 }
 
-
 const $div = () => document.createElement('div');
+
+const npcs = [];
+class Game {
+    createNpc(pos) {
+        const unit = new Unit({pos, classes: ['soldier']});
+        updateObject(unit);
+        npcs.push(unit);
+    }
+}
+
+const game = new Game();
 
 function updateObject(obj, f = _ => {}) {
     if (!obj.el) {
@@ -224,9 +234,9 @@ for (let i = 0; i < 2; i++) {
     units.push(unit);
 }
 
-const npcs = [
-    units[1]
-];
+
+game.createNpc({x: 9, y: 9});
+game.createNpc({x: 5, y: 1});
 
 setTimeout(() => {
     updateObject(map.get({x: 4, y: 6}), tile =>{
@@ -321,9 +331,6 @@ setInterval(() => {
     }
 }, 6000);
 
-npcs.forEach(npc => {
-    npc.v.x = 1;
-});
 setInterval(() => {
     npcs.forEach(npc => {
         updateObject(npc, npc => {
