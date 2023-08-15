@@ -36,6 +36,10 @@ class Tile {
         this.building = buildingType;
         this.progress = 100;
     }
+    destroyBuilding() {
+        this.building = '';
+        this.progress = 0;
+    }
     build(amount) {
         this.progress += amount;
         if (this.progress > 100) {
@@ -280,6 +284,14 @@ const keyMap = {
         if (tile) {
             updateObject(tile, tile => {
                 tile.createBuilding('farm');
+            });
+        }
+    },
+    KeyA(obj) {
+        const tile = map.get(obj.pos);
+        if (tile) {
+            updateObject(tile, tile => {
+                tile.destroyBuilding();
             });
         }
     },
