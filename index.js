@@ -32,6 +32,10 @@ class Tile {
             token: this.token,
         };
     }
+    createBuilding(buildingType) {
+        this.building = buildingType;
+        this.progress = 100;
+    }
     build(amount) {
         this.progress += amount;
         if (this.progress > 100) {
@@ -270,7 +274,15 @@ const keyMap = {
     },
     KeyD(obj) {
         obj.drop();
-    }
+    },
+    KeyB(obj) {
+        const tile = map.get(obj.pos);
+        if (tile) {
+            updateObject(tile, tile => {
+                tile.createBuilding('farm');
+            });
+        }
+    },
 };
 
 document.addEventListener('keydown', e => {
