@@ -235,12 +235,8 @@ for (let y = 0; y < map.height; y++) {
     }
 }
 
-const units = [];
-for (let i = 0; i < 2; i++) {
-    const unit = new Unit({pos: {x: i + 2, y: 3}, classes: ['soldier']});
-    updateObject(unit);
-    units.push(unit);
-}
+const player = new Unit({pos: {x: 6, y: 3}, classes: ['soldier']});
+updateObject(player);
 
 
 game.createNpc({x: 9, y: 9});
@@ -325,7 +321,7 @@ document.addEventListener('keydown', e => {
                 obj.pos.y += d.y;
             };
         }
-        updateObject(units[0], updater);
+        updateObject(player, updater);
     }
 });
 
