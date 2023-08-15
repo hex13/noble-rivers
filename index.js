@@ -134,7 +134,7 @@ function updateObject(obj, f = _ => {}) {
 
         if (obj.token) {
             const token = $div();
-            token.className = 'token';
+            token.className = `token ${obj.token}`;
             obj.el.append(token);
         }
 
@@ -188,7 +188,8 @@ function* border(center, radius) {
 
 map.get({x: 4, y: 5}).item = true;
 
-map.get({x: 6, y: 6}).token = true;
+map.get({x: 6, y: 6}).token = 'wood';
+map.get({x: 6, y: 7}).token = 'gold';
 console.log(map)
 
 const domEl = document.getElementById('app');
