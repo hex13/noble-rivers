@@ -58,12 +58,21 @@
       background: #b95;
    }
 
+   .unit {
+      transition: 0.3s all;
+   }
+
    .gui-legend {
       position:relative;
    }
 
-   .unit {
-      transition: 0.3s all;
+   .gui-detail {
+      height: 2em;
+   }
+
+   .gui-detail .type {
+      font-size: 16px;
+      color: purple;
    }
 
 </style>
@@ -80,6 +89,10 @@
       <div class="tile" style="position:relative;">
          <div class="building"></div>
       </div>
+   </div>
+
+   <div class="gui-detail">
+      <div class="type"></div>
    </div>
 
    <div id="app"></div>

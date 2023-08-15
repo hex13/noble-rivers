@@ -163,6 +163,10 @@ map.get({x: 1, y: 1}).progress = 10;
 map.get({x: 8, y: 3}).building = 'farm';
 map.get({x: 8, y: 3}).progress = 100;
 
+
+map.get({x: 6, y: 6}).building = 'woodcutter';
+map.get({x: 6, y: 6}).progress = 100;
+
 function* border(center, radius) {
     let x = center.x - radius;
     let y = center.y - radius;
@@ -220,11 +224,21 @@ function *radiate(center, maxRadius) {
     }
 }
 
+const detailEl = document.querySelector('.gui-detail');
+const detailTypeEl = detailEl.querySelector('.type');
+
+function inspect(tile) {
+    detailTypeEl.innerText = tile.building;
+}
+
 domEl.addEventListener('click', async e => {
     const el = e.target.closest('.tile');
+    if (!el) return;
     const pos = el.__obj.pos;
-
-    updateObject(map.get(pos), tile => {
+    const tile = map.get(pos);
+    if (!tile) return;
+    inspect(tile);
+    updateObject(tile, tile => {
         tile.terrain = 'water';
     });
 
