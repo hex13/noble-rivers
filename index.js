@@ -35,6 +35,7 @@ class Tile {
     createBuilding(buildingType) {
         this.building = buildingType;
         this.progress = 100;
+        this.produces = {kind: 'item', item: 'gold'};
     }
     destroyBuilding() {
         this.building = '';
@@ -51,8 +52,15 @@ class Tile {
     // like producing resources
     turn() {
         if (this.building) {
-            this.item = true;
-            this.token = Math.random() < 0.5? 'gold' : 'wood';
+            if (this.produces) {
+                if (this.produces.kind == 'item') {
+                    this.item = true;
+                    this.token = this.produces.item;
+                } else if (this.produces.kind == 'unit') {
+                    game.createNpc(this.pos);
+                }
+            }
+
         }
     }
 }
@@ -308,6 +316,14 @@ const keyMap = {
                 tile.destroyBuilding();
             });
         }
+    },
+    KeyU(obj) {
+        const tile = map.get(obj.pos);
+        tile.produces = {kind: 'unit'};
+    },
+    KeyI(obj) {
+        const tile = map.get(obj.pos);
+        tile.produces = {kind: 'item', item: 'wood'};
     },
 };
 
