@@ -57,7 +57,7 @@ class Tile {
                     this.item = true;
                     this.token = this.produces.item;
                 } else if (this.produces.kind == 'unit') {
-                    game.createNpc(this.pos);
+                    game.createUnit(this.pos, 'cpu');
                 }
             }
 
@@ -160,10 +160,11 @@ class Game {
         this.units = [];
         this.onUpdateUnit = onUpdateUnit;
     }
-    createNpc(pos) {
-        const unit = new Unit({pos, classes: ['soldier']});
+    createUnit(pos, player) {
+        const unit = new Unit({player, pos, classes: ['soldier']});
         updateObject(unit);
         this.units.push(unit);
+        return unit;
     }
     updateAi() {
         this.units.forEach(unit => {
@@ -251,8 +252,8 @@ const player = new Unit({pos: {x: 6, y: 3}, classes: ['soldier']});
 updateObject(player);
 
 
-game.createNpc({x: 9, y: 9});
-game.createNpc({x: 5, y: 1});
+game.createUnit({x: 9, y: 9}, 'cpu');
+game.createUnit({x: 5, y: 1}, 'cpu');
 
 setTimeout(() => {
     updateObject(map.get({x: 4, y: 6}), tile =>{
