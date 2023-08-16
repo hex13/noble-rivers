@@ -102,6 +102,10 @@ class Unit {
             y: horizontal? 0 : Math.sign(deltaY),
         };
     }
+    move() {
+        this.pos.x += this.v.x;
+        this.pos.y += this.v.y;
+    }
     createParams() {
         const classes = ['unit'];
         if (this.item) {
