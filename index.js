@@ -68,6 +68,7 @@ class Tile {
 class Unit {
     constructor(props) {
         this.v = {x: 0, y: 0};
+        this.target = null;
         Object.assign(this, props);
     }
     take() {
@@ -255,6 +256,8 @@ updateObject(player);
 game.createUnit({x: 9, y: 9}, 'cpu');
 game.createUnit({x: 5, y: 1}, 'cpu');
 
+const playerUnit = game.createUnit({x: 10, y: 10}, 'player');
+
 setTimeout(() => {
     updateObject(map.get({x: 4, y: 6}), tile =>{
         tile.terrain = 'water';
@@ -286,6 +289,8 @@ domEl.addEventListener('click', async e => {
     updateObject(tile, tile => {
         tile.terrain = 'water';
     });
+
+    playerUnit.target = pos;
 
     const targetTile = map.locate(pos, 4, tile => tile.item);
     if (targetTile) {
@@ -358,7 +363,12 @@ setInterval(() => {
 
 
 function onUpdateUnit(unit) {
-    return onUpdateNpc(unit);
+    if (unit.player == 'cpu') {
+        return onUpdateNpc(unit);
+    } else {
+        if (unit.target) unit.approach(unit.target);
+        unit.move();
+    }
 }
 
 function onUpdateNpc(npc) {
