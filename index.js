@@ -112,6 +112,10 @@ class Unit {
         if (this.item) {
             classes.push('has-item');
         }
+        if (this.player) {
+            classes.push(this.player);
+        }
+
         return {
             classes,
             x: this.pos.x * TILE_SIZE,
