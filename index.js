@@ -152,23 +152,23 @@ function updateEl(el, params) {
 const $div = () => document.createElement('div');
 
 class Game {
-    constructor({ onUpdateNpc }) {
-        this.npcs = [];
-        this.onUpdateNpc = onUpdateNpc;
+    constructor({ onUpdateUnit }) {
+        this.units = [];
+        this.onUpdateUnit = onUpdateUnit;
     }
     createNpc(pos) {
         const unit = new Unit({pos, classes: ['soldier']});
         updateObject(unit);
-        this.npcs.push(unit);
+        this.units.push(unit);
     }
     updateAi() {
-        this.npcs.forEach(npc => {
-            updateObject(npc, this.onUpdateNpc);
+        this.units.forEach(unit => {
+            updateObject(unit, this.onUpdateUnit);
         });
     }
 }
 
-const game = new Game({ onUpdateNpc });
+const game = new Game({ onUpdateUnit });
 
 function updateObject(obj, f = _ => {}) {
     if (!obj.el) {
@@ -351,6 +351,10 @@ setInterval(() => {
     }
 }, 6000);
 
+
+function onUpdateUnit(unit) {
+    return onUpdateNpc(unit);
+}
 
 function onUpdateNpc(npc) {
     switch (npc.state) {
