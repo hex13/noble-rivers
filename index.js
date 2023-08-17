@@ -62,20 +62,22 @@ class Tile {
             this.progress = 100;
         }
     }
+    produce() {
+        if (this.produces.kind == 'item') {
+            this.item = true;
+            this.token = this.produces.item.name;
+        } else if (this.produces.kind == 'unit') {
+            game.createUnit(this.pos, 'cpu');
+        }
+    }
     // gameplay doesn't have to be turn based
     // but internally turns are responsible for tile events
     // like producing resources
     turn() {
         if (this.building) {
             if (this.produces) {
-                if (this.produces.kind == 'item') {
-                    this.item = true;
-                    this.token = this.produces.item.name;
-                } else if (this.produces.kind == 'unit') {
-                    game.createUnit(this.pos, 'cpu');
-                }
+                this.produce();
             }
-
         }
     }
 }
