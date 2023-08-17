@@ -161,6 +161,18 @@ class TileMap {
             if (tile && check(tile)) return tile;
         }
     }
+    neighbors(pos) {
+        const result = [];
+        for (let y = -1; y <= 1; y++) {
+            for (let x = -1; x <= 1; x++) {
+                if (x != 0 || y != 0) {
+                    const tile = this.get({x: pos.x + x, y: pos.y + y});
+                    result.push(tile);
+                }
+            }
+        }
+        return result;
+    }
 }
 
 function updateEl(el, params) {
