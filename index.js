@@ -99,6 +99,7 @@ class Tile {
             if (ok) {
                 this.item = true;
                 this.token = this.produces.item.name;
+                this.produces.resources = {};
             }
         } else if (this.produces.kind == 'unit') {
             game.createUnit(this.pos, 'cpu');
