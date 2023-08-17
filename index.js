@@ -70,8 +70,29 @@ class Tile {
     }
     produce() {
         if (this.produces.kind == 'item') {
-            this.item = true;
-            this.token = this.produces.item.name;
+            const item = this.produces.item;
+            let ok = true;
+            this.map.neighbors(this.pos).forEach((n, i) => {
+                if (n.item && Object.hasOwn(products, n.token)) {
+                    updateObject(n, n => {
+                        n.item = false;
+                        const gatheredBefore = this.produces.resources[n.token] || 0;
+                        this.produces.resources[n.token] = gatheredBefore + 1;
+                        n.token = '';
+                    });
+                }
+            });
+            for (const k in item.requires) {
+                if ((this.produces.resources[k] || 0) < item.requires[k]) {
+                    ok = false;
+                    break;
+                }
+            }
+
+            if (ok) {
+                this.item = true;
+                this.token = this.produces.item.name;
+            }
         } else if (this.produces.kind == 'unit') {
             game.createUnit(this.pos, 'cpu');
         }
