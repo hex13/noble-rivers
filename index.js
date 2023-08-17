@@ -14,9 +14,14 @@ const products = {
     wood: {
         name: 'wood',
         requires: {
-            food: 3,
+            food: 1,
         }
-    }
+    },
+    food: {
+        name: 'food',
+        requires: {
+        }
+    },
 };
 
 const TILE_SIZE = 64;
