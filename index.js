@@ -24,6 +24,12 @@ const products = {
     },
 };
 
+const buildings = {
+    farm: {
+        produces: {kind: 'item', item: products.food},
+    }
+}
+
 const TILE_SIZE = 64;
 class Tile {
     constructor(pos, map) {
@@ -56,7 +62,8 @@ class Tile {
     createBuilding(buildingType) {
         this.building = buildingType;
         this.progress = 100;
-        this.produces = {kind: 'item', item: products.gold, resources: {}};
+        const buildingMeta = buildings[buildingType];
+        this.produces = {...buildingMeta.produces, resources: {}};
     }
     destroyBuilding() {
         this.building = '';
@@ -271,7 +278,6 @@ map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
 map.get({x: 1, y: 1}).progress = 10;
 map.get({x: 8, y: 3}).createBuilding('farm');
-map.get({x: 8, y: 3}).produces.item = products.food;
 
 map.get({x: 8, y: 3}).progress = 100;
 
