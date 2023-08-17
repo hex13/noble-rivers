@@ -226,7 +226,7 @@ function updateEl(el, params) {
     // el.innerText = params.text;
 }
 
-const $div = () => document.createElement('div');
+const $ = (tag) => document.createElement(tag);
 
 class Game {
     constructor({ onUpdateUnit }) {
@@ -250,17 +250,17 @@ const game = new Game({ onUpdateUnit });
 
 function updateObject(obj, f = _ => {}) {
     if (!obj.el) {
-        obj.el = $div();
+        obj.el = $('div');
         obj.el.__obj = obj;
 
         if (Object.hasOwn(obj, 'token')) {
-            const token = $div();
+            const token = $('div');
             obj.el.append(token);
             obj.el.__token = token;
         }
 
         if (Object.hasOwn(obj, 'progress')) {
-            const el = $div();
+            const el = $('div');
             el.className = 'building';
             obj.el.appendChild(el);
             obj.el.__buildingEl = el;
