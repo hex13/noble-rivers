@@ -26,13 +26,14 @@ const products = {
 
 const TILE_SIZE = 64;
 class Tile {
-    constructor(pos) {
+    constructor(pos, map) {
         this.terrain = 'grass';
         this.pos = {...pos};
         this.item = false;
         this.progress = 0;
         this.building = '';
         this.token = '';
+        this.map = map;
     }
     createParams() {
         const classes = ['tile'];
@@ -152,7 +153,7 @@ class TileMap {
     constructor(w, h) {
         this.width = w;
         this.height = h;
-        this.data = [...Array(w * h)].map((_, i) => new Tile({x: i % w, y: ~~(i / w)}));
+        this.data = [...Array(w * h)].map((_, i) => new Tile({x: i % w, y: ~~(i / w)}, this));
     }
     getIndex(pos) {
         return pos.y * this.width + pos.x;
