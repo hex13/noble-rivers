@@ -310,7 +310,7 @@ const detailEl = document.querySelector('.gui-detail');
 const detailTypeEl = detailEl.querySelector('.type');
 
 function inspect(tile) {
-    detailTypeEl.innerText = tile.building;
+    detailTypeEl.innerText = `${tile.building} - ${JSON.stringify(tile.produces)}`;
 }
 
 domEl.addEventListener('click', async e => {
