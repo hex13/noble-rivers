@@ -4,6 +4,21 @@ const sleep = t => new Promise(r => {
     setTimeout(r, t);
 });
 
+const products = {
+    gold: {
+        name: 'gold',
+        requires: {
+            food: 2,
+        }
+    },
+    wood: {
+        name: 'wood',
+        requires: {
+            food: 3,
+        }
+    }
+};
+
 const TILE_SIZE = 64;
 class Tile {
     constructor(pos) {
@@ -35,7 +50,7 @@ class Tile {
     createBuilding(buildingType) {
         this.building = buildingType;
         this.progress = 100;
-        this.produces = {kind: 'item', item: 'gold'};
+        this.produces = {kind: 'item', item: products.gold};
     }
     destroyBuilding() {
         this.building = '';
@@ -55,7 +70,7 @@ class Tile {
             if (this.produces) {
                 if (this.produces.kind == 'item') {
                     this.item = true;
-                    this.token = this.produces.item;
+                    this.token = this.produces.item.name;
                 } else if (this.produces.kind == 'unit') {
                     game.createUnit(this.pos, 'cpu');
                 }
@@ -337,7 +352,7 @@ const keyMap = {
     },
     KeyI(obj) {
         const tile = map.get(obj.pos);
-        tile.produces = {kind: 'item', item: 'wood'};
+        tile.produces = {kind: 'item', item: products.wood};
     },
 };
 
