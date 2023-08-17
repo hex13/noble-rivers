@@ -20,8 +20,8 @@
    }
    .tile {
       font-size: 12px;
-      width: 64px;
-      height: 64px;
+      width: 100px;
+      height: 100px;
       border: 1px solid red;
    }
    .tile.has-item {
@@ -37,20 +37,29 @@
       background: #00f;
    }
    .token {
-      width: 20%;
+      width: 30%;
       height: 20%;
       border: 1px dotted rgb(0 0 0 / 0.4);
-      border-radius: 25%;
+      border-radius: 30%;
       background-color: red;
    }
    .token.wood {
-      background-color: brown;
+      background-color: #ffaa33;
    }
    .token.gold {
       background-color: gold;
    }
    .token.food {
       background-color: #f99;
+   }
+   .token.food:before {
+      content: 'food';
+   }
+   .token.wood:before {
+      content: 'wood';
+   }
+   .token.gold:before {
+      content: 'gold';
    }
    .building {
       background: #aaa;
@@ -68,6 +77,24 @@
    .tile.woodcutter .building {
       background: #b95;
    }
+
+   .tile .building:before {
+      background: rgb(0 0 0 / 0.66);
+      font-size: 1.2em;
+      padding: 4px;
+      border-radius: 4px;
+      color: white;
+      margin-left: -25%;
+   }
+
+   .tile.woodcutter .building:before {
+      content: 'woodcutter';
+   }
+
+   .tile.farm .building:before {
+      content: 'farm';
+   }
+
 
    .unit {
       transition: 0.3s all;

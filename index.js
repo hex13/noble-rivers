@@ -30,7 +30,7 @@ const buildings = {
     }
 }
 
-const TILE_SIZE = 64;
+const TILE_SIZE = 100;
 class Tile {
     constructor(pos, map) {
         this.terrain = 'grass';
