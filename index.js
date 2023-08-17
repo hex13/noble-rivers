@@ -50,7 +50,7 @@ class Tile {
     createBuilding(buildingType) {
         this.building = buildingType;
         this.progress = 100;
-        this.produces = {kind: 'item', item: products.gold};
+        this.produces = {kind: 'item', item: products.gold, resources: {}};
     }
     destroyBuilding() {
         this.building = '';
@@ -365,9 +365,13 @@ const keyMap = {
         const tile = map.get(obj.pos);
         tile.produces = {kind: 'unit'};
     },
-    KeyI(obj) {
+    KeyW(obj) {
         const tile = map.get(obj.pos);
-        tile.produces = {kind: 'item', item: products.wood};
+        tile.produces = {kind: 'item', item: products.wood, resources: {}};
+    },
+    KeyF(obj) {
+        const tile = map.get(obj.pos);
+        tile.produces = {kind: 'item', item: products.food, resources: {}};
     },
 };
 
