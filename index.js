@@ -354,10 +354,10 @@ domEl.addEventListener('click', async e => {
     const tile = map.get(pos);
     if (!tile) return;
     inspect(tile);
-    updateObject(tile, tile => {
-        tile.terrain = 'water';
-    });
 
+    updateObject(tile, tile => {
+        tile.createBuilding(mode);
+    });
     playerUnit.target = pos;
 
     const targetTile = map.locate(pos, 4, tile => tile.item);
@@ -481,3 +481,17 @@ function onUpdateNpc(npc) {
 setInterval(() => {
     game.updateAi();
 }, 800);
+
+const menuEl = document.querySelector('.gui-menu');
+let mode = '';
+
+Object.entries(buildings).forEach(([key, building]) => {
+    const el = $('button');
+    el.innerText = key;
+    el.addEventListener('click', () => {
+        mode = key;
+        menuEl.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+        el.classList.add('active');
+    });
+    menuEl.append(el);
+});

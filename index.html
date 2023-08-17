@@ -3,7 +3,27 @@
 <style>
    body {
       font-family: sans-serif;
+      background: #343;
+      color: white;
    }
+   * {
+      box-sizing: border-box;
+   }
+   button {
+      color: white;
+      font-size: 16px;
+      background: linear-gradient(to bottom, #996633, #aa8844);
+      border-radius: 4px;
+      margin: 4px;
+      padding: 8px;
+      border: 1px solid rgb(0 0 0 / 0.3);
+      box-shadow: inset 1px 1px 3px rgb(0 0 0 / 0.9);
+      text-shadow: 1px 1px rgb(0 0 0 / 0.3);
+   }
+   button.active {
+      box-shadow: inset 1px 1px 2px 3px rgb(0 0 0 / 0.9);
+   }
+
    .tile, .unit {
       position: absolute;
    }
@@ -119,6 +139,7 @@
    }
 
 
+
 </style>
 </head>
 <body>
@@ -138,6 +159,8 @@
    <div class="gui-detail">
       <div class="type"></div>
    </div>
+
+   <div class="gui-menu"></div>
 
    <div id="app"></div>
    <script src="index.js"></script>
