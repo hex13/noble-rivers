@@ -87,6 +87,7 @@ class Unit {
         this.v = {x: 0, y: 0};
         this.target = null;
         Object.assign(this, props);
+        this.pos = props.pos? {...props.pos} : {x: 0, y: 0};
     }
     take() {
         const tile = map.get(this.pos);
