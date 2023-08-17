@@ -14,7 +14,7 @@ const products = {
     wood: {
         name: 'wood',
         requires: {
-            food: 1,
+            food: 3,
         }
     },
     food: {
@@ -27,6 +27,9 @@ const products = {
 const buildings = {
     farm: {
         produces: {kind: 'item', item: products.food},
+    },
+    woodcutter: {
+        produces: {kind: 'item', item: products.wood},
     }
 }
 
@@ -279,12 +282,8 @@ map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
 map.get({x: 1, y: 1}).progress = 10;
 map.get({x: 8, y: 3}).createBuilding('farm');
+map.get({x: 6, y: 6}).createBuilding('woodcutter');
 
-map.get({x: 8, y: 3}).progress = 100;
-
-
-map.get({x: 6, y: 6}).building = 'woodcutter';
-map.get({x: 6, y: 6}).progress = 100;
 
 function* border(center, radius) {
     let x = center.x - radius;
@@ -307,7 +306,6 @@ function* border(center, radius) {
 
 map.get({x: 4, y: 5}).item = true;
 
-map.get({x: 6, y: 6}).token = 'wood';
 map.get({x: 6, y: 7}).token = 'gold';
 console.log(map)
 
