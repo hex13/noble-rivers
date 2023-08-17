@@ -249,7 +249,9 @@ map.get({x: 4, y: 3}).terrain = 'water';
 map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
 map.get({x: 1, y: 1}).progress = 10;
-map.get({x: 8, y: 3}).building = 'farm';
+map.get({x: 8, y: 3}).createBuilding('farm');
+map.get({x: 8, y: 3}).produces.item = products.food;
+
 map.get({x: 8, y: 3}).progress = 100;
 
 
