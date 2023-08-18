@@ -60,6 +60,10 @@ class Tile {
             text: `${this.pos.x}, ${this.pos.y}`,
             progress: this.progress,
             token: this.token,
+            children: [
+                {key: '__token'},
+                {key: '__buildingEl', classes: ['building']},
+            ],
         };
     }
     createBuilding(buildingType) {
@@ -250,21 +254,18 @@ const game = new Game({ onUpdateUnit });
 
 function updateObject(obj, f = _ => {}) {
     if (!obj.el) {
+        const params = obj.createParams();
         obj.el = $('div');
         obj.el.__obj = obj;
 
-        if (Object.hasOwn(obj, 'token')) {
-            const token = $('div');
-            obj.el.append(token);
-            obj.el.__token = token;
+        if (params.children) {
+            params.children.forEach(child => {
+                const childEl = $('div');
+                if (child.classes) childEl.className = child.classes.join(' ');
+                obj.el.append(childEl);
+                obj.el[child.key] = childEl;
+            })
         }
-
-        if (Object.hasOwn(obj, 'progress')) {
-            const el = $('div');
-            el.className = 'building';
-            obj.el.appendChild(el);
-            obj.el.__buildingEl = el;
-        }        
 
         domEl.append(obj.el);
     }
