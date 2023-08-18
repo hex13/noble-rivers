@@ -411,6 +411,7 @@ const keyMap = {
 
 document.addEventListener('keydown', e => {
     if (Object.hasOwn(keyMap, e.code)) {
+        e.preventDefault();
         let updater = keyMap[e.code];
         if (typeof updater != 'function') {
             const d = updater;
