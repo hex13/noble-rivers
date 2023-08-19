@@ -402,6 +402,11 @@ const keyMap = {
         updateObject(tile, tile => tile.terrain = 'forest');
         // tile.produces = {kind: 'item', item: products.food, resources: {}};
     },
+    KeyW(obj) {
+        const tile = map.get(obj.pos);
+        updateObject(tile, tile => tile.terrain = 'water');
+        // tile.produces = {kind: 'item', item: products.food, resources: {}};
+    },
 };
 
 document.addEventListener('keydown', e => {
@@ -432,7 +437,8 @@ setInterval(() => {
 
 function onUpdateUnit(unit) {
     if (unit.player == 'cpu') {
-        return onUpdateNpc(unit);
+        return onUpdateShip(unit);
+        // return onUpdateNpc(unit);
     } else {
         if (unit.target) unit.approach(unit.target);
         unit.move();
@@ -472,6 +478,16 @@ function onUpdateNpc(npc) {
         npc.pos.x = newX;
         npc.pos.y = newY;
     }
+}
+
+function onUpdateShip(unit) {
+    const candidates = map.neighbors(unit.pos).filter(n => n.terrain == 'water');
+    if (candidates.length) {
+        const next = candidates[~~(Math.random() * candidates.length)];
+        unit.pos.x = next.pos.x;
+        unit.pos.y = next.pos.y;
+    }
+
 }
 
 setInterval(() => {
