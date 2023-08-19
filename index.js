@@ -62,7 +62,11 @@ class Tile {
             token: this.token,
             children: [
                 {key: '__token'},
-                {key: '__buildingEl', classes: ['building']},
+                {key: '__buildingEl', classes: ['building'], create: () => {
+                    const el = document.getElementById('house').cloneNode(true)
+                    el.id = ''
+                    return el;
+                }},
             ],
         };
     }
@@ -221,7 +225,8 @@ function updateEl(el, params) {
     el.className = params.classes.join(' ');
     el.style.transform = `translate(${params.x}px, ${params.y}px)`;
     if (el.__buildingEl) {
-        el.__buildingEl.style.height = `${~~((params.progress / 100) * 50)}px`;
+        el.__buildingEl.style.display = params.progress? 'block' : 'none';
+        // el.__buildingEl.style.height = `${~~((params.progress? 1 : 0) * 100)}%`;
     }
     if (el.__token) {
         el.__token.className = params.token? `token ${params.token}` : '';
@@ -260,7 +265,8 @@ function updateObject(obj, f = _ => {}) {
 
         if (params.children) {
             params.children.forEach(child => {
-                const childEl = $('div');
+                const childEl = child.create? child.create() : $('div');
+                childEl.position = 'absolute';
                 if (child.classes) childEl.className = child.classes.join(' ');
                 obj.el.append(childEl);
                 obj.el[child.key] = childEl;
