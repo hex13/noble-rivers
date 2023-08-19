@@ -47,10 +47,11 @@
    }
    .tile {
       font-size: 12px;
-      border: 1px solid rgb(0 0 0 / 0.3);
+      border: 1px solid rgb(0 0 0 / 0.1);
       width: 100px;
       height: 100px;
-      box-shadow: 2px 2px 3px 4px rgb(0 0 0 / 0.1);
+      box-shadow: 2px 2px 3px 3px rgb(0 0 0 / 0.2);
+
    }
    .tile.has-item {
       box-shadow:  inset 0 0 3px 4px orange;
@@ -84,7 +85,7 @@
       border: 1px solid rgb(0 0 0 / 0.4);
       border-radius: 50%;
       background-color: red;
-      box-shadow: 2px 2px 3px rgb(0 0 0 / 0.3);
+      box-shadow: 2px 2px 3px rgb(0 0 0 / 0.6);
    }
    .token {
       position: absolute;
@@ -116,15 +117,35 @@
       left: 4px;
       top: 4px;
       border-radius: 4px;
-      box-shadow: 1px 1px 1px 2px rgb(0 0 0 / 0.5);
+      box-shadow: 1px 1px 1px 2px rgb(0 0 0 / 0.4);
    }
 
    .tile.farm .building {
-      background: linear-gradient(to bottom, #ff9, #cc6);
+      background: linear-gradient(to bottom, #cede89, #cc6);
    }
 
    .tile.woodcutter .building {
-      background: linear-gradient(to bottom, #ca6, #a84);
+      background: linear-gradient(to bottom, #ca6, #aa4);
+   }
+
+   .token {
+      animation: 0.8s infinite alternate token-animation;
+   }
+   @keyframes token-animation {
+      0% {
+         transform: rotate(-2deg);
+         opacity: 1;
+         filter: brightness(1.0);
+      }
+      50% {
+         opacity: 0.9;
+         filter: brightness(1.2);
+      }
+      100% {
+         transform: rotate(2deg);
+         filter: brightness(1.0);
+         opacity: 1;
+      }
    }
 
    .tile .building:before {
