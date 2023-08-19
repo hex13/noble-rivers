@@ -182,6 +182,11 @@ class Unit {
 
         return {
             classes,
+            create: () => {
+                const el = document.getElementById('unit').cloneNode(true)
+                el.id = ''
+                return el;
+            },
             x: this.pos.x * TILE_SIZE,
             y: this.pos.y * TILE_SIZE,
         };
@@ -260,7 +265,7 @@ const game = new Game({ onUpdateUnit });
 function updateObject(obj, f = _ => {}) {
     if (!obj.el) {
         const params = obj.createParams();
-        obj.el = $('div');
+        obj.el = params.create? params.create() : $('div');
         obj.el.__obj = obj;
 
         if (params.children) {
