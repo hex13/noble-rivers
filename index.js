@@ -29,7 +29,7 @@ const buildings = {
         produces: {kind: 'item', item: products.food},
     },
     woodcutter: {
-        produces: {kind: 'item', item: products.wood},
+        produces: {kind: 'item', item: products.wood, near: 'forest'},
     }
 }
 
@@ -90,7 +90,9 @@ class Tile {
         if (this.produces.kind == 'item') {
             const item = this.produces.item;
             let ok = true;
+            let nearCondition = this.produces.near? false : true;
             this.map.neighbors(this.pos).forEach((n, i) => {
+                nearCondition ||= this.produces.near == n.terrain;
                 if (n.item && Object.hasOwn(products, n.token) && Object.hasOwn(item.requires, n.token) && item.requires[n.token] > (this.produces.resources[n.token] || 0)) {
                     updateObject(n, n => {
                         n.item = false;
@@ -106,7 +108,8 @@ class Tile {
                     break;
                 }
             }
-
+            ok = ok && nearCondition;
+            console.log(this.building, ok, nearCondition)
             if (ok) {
                 this.item = true;
                 this.token = this.produces.item.name;
@@ -376,12 +379,16 @@ domEl.addEventListener('click', async e => {
     });
     playerUnit.target = pos;
 
-    const targetTile = map.locate(pos, 4, tile => tile.item);
-    if (targetTile) {
-        updateObject(targetTile, tile => {
-            tile.terrain = 'forest';
-        })
-    }
+    // map.neighbors(pos).forEach(tile => {
+    //     updateObject(tile, tile => tile.terrain = 'forest');
+    // })
+
+    // const targetTile = map.locate(pos, 4, tile => tile.item);
+    // if (targetTile) {
+    //     updateObject(targetTile, tile => {
+    //         tile.terrain = 'forest';
+    //     })
+    // }
 });
 
 const keyMap = {
@@ -421,7 +428,8 @@ const keyMap = {
     },
     KeyF(obj) {
         const tile = map.get(obj.pos);
-        tile.produces = {kind: 'item', item: products.food, resources: {}};
+        updateObject(tile, tile => tile.terrain = 'forest');
+        // tile.produces = {kind: 'item', item: products.food, resources: {}};
     },
 };
 
