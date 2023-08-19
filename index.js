@@ -495,11 +495,12 @@ setInterval(() => {
 }, 800);
 
 const menuEl = document.querySelector('.gui-menu');
-let mode = '';
+let mode = 'inspect';
 
 Object.entries(buildings).concat([['inspect']]).forEach(([key, building]) => {
     const el = $('button');
     el.innerText = key;
+    el.className = mode == key? 'active' : '';
     el.addEventListener('click', () => {
         mode = key;
         menuEl.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
