@@ -62,7 +62,17 @@
       background: radial-gradient(#050, #040, #040);
    }
    .water {
-      background: linear-gradient(to bottom, #12e, #12c);
+      background-image: linear-gradient(to bottom, #12e, #13f, #24f, #13e);
+      background-position: 0 0 ;
+      animation: 2s infinite alternate a;
+   }
+   @keyframes a {
+      0% {
+         background-position: 0 0;
+      }
+      100% {
+         background-position: 0 30px;
+      }
    }
    .token {
       width: 50%;
