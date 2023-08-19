@@ -4,35 +4,6 @@ const sleep = t => new Promise(r => {
     setTimeout(r, t);
 });
 
-const products = {
-    gold: {
-        name: 'gold',
-        requires: {
-            food: 2,
-        }
-    },
-    wood: {
-        name: 'wood',
-        requires: {
-            food: 3,
-        }
-    },
-    food: {
-        name: 'food',
-        requires: {
-        }
-    },
-};
-
-const buildings = {
-    farm: {
-        produces: {kind: 'item', item: products.food},
-    },
-    woodcutter: {
-        produces: {kind: 'item', item: products.wood, near: 'forest'},
-    }
-}
-
 const TILE_SIZE = 100;
 class Tile {
     constructor(pos, map) {
@@ -93,7 +64,7 @@ class Tile {
             let nearCondition = this.produces.near? false : true;
             this.map.neighbors(this.pos).forEach((n, i) => {
                 nearCondition ||= this.produces.near == n.terrain;
-                if (n.item && Object.hasOwn(products, n.token) && Object.hasOwn(item.requires, n.token) && item.requires[n.token] > (this.produces.resources[n.token] || 0)) {
+                if (n.item && Object.hasOwn(item.requires, n.token) && item.requires[n.token] > (this.produces.resources[n.token] || 0)) {
                     updateObject(n, n => {
                         n.item = false;
                         const gatheredBefore = this.produces.resources[n.token] || 0;
