@@ -87,7 +87,7 @@ class Tile {
             const item = this.produces.item;
             let ok = true;
             this.map.neighbors(this.pos).forEach((n, i) => {
-                if (n.item && Object.hasOwn(products, n.token)) {
+                if (n.item && Object.hasOwn(products, n.token) && Object.hasOwn(item.requires, n.token) && item.requires[n.token] > (this.produces.resources[n.token] || 0)) {
                     updateObject(n, n => {
                         n.item = false;
                         const gatheredBefore = this.produces.resources[n.token] || 0;
