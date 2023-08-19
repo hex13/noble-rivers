@@ -354,7 +354,11 @@ domEl.addEventListener('click', async e => {
     const pos = el.__obj.pos;
     const tile = map.get(pos);
     if (!tile) return;
-    inspect(tile);
+
+    if (mode == 'inspect') {
+        inspect(tile);
+        return;
+    }
 
     updateObject(tile, tile => {
         tile.createBuilding(mode);
@@ -487,7 +491,7 @@ setInterval(() => {
 const menuEl = document.querySelector('.gui-menu');
 let mode = '';
 
-Object.entries(buildings).forEach(([key, building]) => {
+Object.entries(buildings).concat([['inspect']]).forEach(([key, building]) => {
     const el = $('button');
     el.innerText = key;
     el.addEventListener('click', () => {
