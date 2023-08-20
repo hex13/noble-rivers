@@ -28,3 +28,5 @@ function *radiate(center, maxRadius) {
 const sleep = t => new Promise(r => {
     setTimeout(r, t);
 });
+
+const $ = (tag) => document.createElement(tag);

@@ -196,8 +196,6 @@ function updateEl(el, params) {
     // el.innerText = params.text;
 }
 
-const $ = (tag) => document.createElement(tag);
-
 class Game {
     constructor({ onUpdateUnit }) {
         this.units = [];
