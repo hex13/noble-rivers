@@ -34,4 +34,7 @@ const buildings = {
     mine: {
         produces: {kind: 'item', item: products.metal, near: 'mountain'},
     },
+    barracks: {
+        produces: {kind: 'unit', unit: 'soldier'},
+    },
 }

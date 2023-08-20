@@ -78,7 +78,7 @@ class Tile {
                 this.produces.resources = {};
             }
         } else if (this.produces.kind == 'unit') {
-            game.createUnit(this.pos, 'cpu');
+            game.createUnit(this.pos, 'cpu', this.produces.unit);
         }
     }
     drop(item) {
@@ -201,8 +201,8 @@ class Game {
         this.units = [];
         this.onUpdateUnit = onUpdateUnit;
     }
-    createUnit(pos, player) {
-        const unit = new Unit({player, pos, classes: ['soldier']});
+    createUnit(pos, player, kind) {
+        const unit = new Unit({kind, player, pos, classes: ['soldier']});
         updateObject(unit);
         this.units.push(unit);
         return unit;
@@ -396,12 +396,41 @@ setInterval(() => {
 
 
 function onUpdateUnit(unit) {
-    if (unit.player == 'cpu') {
+    if (unit.kind == 'soldier') {
+        onUpdateSoldier(unit);
+    } else if (unit.player == 'cpu') {
         // return onUpdateShip(unit);
         return onUpdateNpc(unit);
     } else {
         if (unit.target) unit.approach(unit.target);
         unit.move();
+    }
+}
+
+function moveWithBouncing(unit) {
+    const newX = unit.pos.x + unit.v.x;
+    const newY = unit.pos.y + unit.v.y;
+    let ok = true;
+    if (newX >= map.width || newX < 0) {
+        ok = false;
+        unit.v.x *= -1;
+    }
+    if (ok) {
+        unit.pos.x = newX;
+        unit.pos.y = newY;
+    }
+}
+
+function onUpdateSoldier(npc) {
+    console.log("update soldier", npc.state);
+    switch (npc.state) {
+        case 'move':
+            moveWithBouncing(npc);
+            break;
+        default:
+            npc.state = 'move';
+            npc.v.x = 1;
+            npc.v.y = 0;
     }
 }
 
