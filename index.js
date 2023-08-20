@@ -31,7 +31,7 @@ class Tile {
             token: this.token,
             children: [
                 {key: '__token'},
-                {key: '__buildingEl', classes: ['building'], create: () => cloneTemplate('#house')},
+                {key: '__buildingEl', classes: ['building'], template: '#house'},
             ],
         };
     }
@@ -143,7 +143,7 @@ class Unit {
         return {
             ...createParams(this),
             classes: ['unit', this.player, `${this.item? 'has' : 'no'}-item`],
-            create: () => cloneTemplate('#unit'),
+            template: '#unit',
         };
     }
 }
@@ -221,12 +221,12 @@ const game = new Game({ onUpdateUnit });
 function updateObject(obj, f = _ => {}) {
     if (!obj.el) {
         const params = obj.createParams();
-        obj.el = params.create? params.create() : $('div');
+        obj.el = params.template? cloneTemplate(params.template) : $('div');
         obj.el.__obj = obj;
 
         if (params.children) {
             params.children.forEach(child => {
-                const childEl = child.create? child.create() : $('div');
+                const childEl = child.template? cloneTemplate(child.template) : $('div');
                 childEl.position = 'absolute';
                 if (child.classes) childEl.className = child.classes.join(' ');
                 obj.el.append(childEl);
