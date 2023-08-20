@@ -395,8 +395,8 @@ setInterval(() => {
 
 function onUpdateUnit(unit) {
     if (unit.player == 'cpu') {
-        return onUpdateShip(unit);
-        // return onUpdateNpc(unit);
+        // return onUpdateShip(unit);
+        return onUpdateNpc(unit);
     } else {
         if (unit.target) unit.approach(unit.target);
         unit.move();
@@ -414,10 +414,28 @@ function onUpdateNpc(npc) {
 
             break;
         }
+        case 'building': {
+            npc.approach(npc.target);
+            if (npc.v.x == 0 && npc.v.y == 0) {
+                updateObject(map.get(npc.pos), tile => {
+                    tile.createBuilding('woodcutter');
+                });
+                npc.state = '';
+            }
+            break;
+        }
         default: {
-            const target = map.locate(npc.pos, 10, tile => tile.item);
+            let target = map.locate(npc.pos, 10, tile => tile.item);
             if (target) {
                 npc.approach(target.pos);
+            } else {
+                target =  map.locate(npc.pos, 10, tile => tile.terrain == 'forest');
+                if (target) {
+                    npc.target = {x: target.pos.x, y: target.pos.y + 1};
+                    npc.buildTarget = target;
+                    npc.state = 'building';
+                } 
+                
             }
             if (npc.take()) {
                 npc.state = 'bearing'
