@@ -1,6 +1,18 @@
 console.log("Noble Rivers");
 
 const TILE_SIZE = 100;
+
+const createParams = (obj) => ({
+    x: obj.pos.x * TILE_SIZE,
+    y: obj.pos.y * TILE_SIZE,
+});
+
+function cloneTemplate(sel) {
+    const el = document.querySelector(sel).cloneNode(true);
+    el.id = ''
+    return el;
+}
+
 class Tile {
     constructor(pos, map) {
         this.terrain = 'grass';
@@ -12,28 +24,14 @@ class Tile {
         this.map = map;
     }
     createParams() {
-        const classes = ['tile'];
-        classes.push(this.terrain);
-        if (this.item) {
-            classes.push('has-item');
-        }
-        if (this.building) {
-            classes.push(this.building);
-        }
         return {
-            classes,
-            x: this.pos.x * TILE_SIZE,
-            y: this.pos.y * TILE_SIZE,
-            text: `${this.pos.x}, ${this.pos.y}`,
+            ...createParams(this),
+            classes: ['tile', this.terrain, `${this.item? 'has' : 'no'}-item`, this.building],
             progress: this.progress,
             token: this.token,
             children: [
                 {key: '__token'},
-                {key: '__buildingEl', classes: ['building'], create: () => {
-                    const el = document.getElementById('house').cloneNode(true)
-                    el.id = ''
-                    return el;
-                }},
+                {key: '__buildingEl', classes: ['building'], create: () => cloneTemplate('#house')},
             ],
         };
     }
@@ -142,23 +140,10 @@ class Unit {
         this.pos.y += this.v.y;
     }
     createParams() {
-        const classes = ['unit'];
-        if (this.item) {
-            classes.push('has-item');
-        }
-        if (this.player) {
-            classes.push(this.player);
-        }
-
         return {
-            classes,
-            create: () => {
-                const el = document.getElementById('unit').cloneNode(true)
-                el.id = ''
-                return el;
-            },
-            x: this.pos.x * TILE_SIZE,
-            y: this.pos.y * TILE_SIZE,
+            ...createParams(this),
+            classes: ['unit', this.player, `${this.item? 'has' : 'no'}-item`],
+            create: () => cloneTemplate('#unit'),
         };
     }
 }
