@@ -16,6 +16,12 @@ const products = {
         requires: {
         }
     },
+    metal: {
+        name: 'metal',
+        requires: {
+            food: 2,
+        }
+    },
 };
 
 const buildings = {
@@ -24,5 +30,8 @@ const buildings = {
     },
     woodcutter: {
         produces: {kind: 'item', item: products.wood, near: 'forest'},
-    }
+    },
+    mine: {
+        produces: {kind: 'item', item: products.metal, near: 'mountain'},
+    },
 }

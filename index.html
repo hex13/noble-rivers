@@ -75,6 +75,9 @@
          background-position: 0 30px;
       }
    }
+   .mountain {
+      background-image: radial-gradient(#ddf, #baa, #666688);
+   }
    .token {
       width: 50%;
       height: 50%;
@@ -100,6 +103,9 @@
    .token.food {
       background: linear-gradient(to bottom, #fa9, #e56);
    }
+   .token.metal {
+      background: linear-gradient(to bottom, #ccd, #888);
+   }
    .token.food:before {
       content: 'food';
    }
@@ -108,6 +114,9 @@
    }
    .token.gold:before {
       content: 'gold';
+   }
+   .token.metal:before {
+      content: 'metal';
    }
    .tile .building {
       background: #aaa;
@@ -126,6 +135,10 @@
 
    .tile.woodcutter .building {
       background: linear-gradient(to bottom, #ca6, #aa4);
+   }
+
+   .tile.mine .building {
+      background: linear-gradient(to bottom, #cce, #889);
    }
 
    .token {
@@ -172,6 +185,9 @@
       content: 'farm';
    }
 
+   .tile.mine .building:before {
+      content: 'mine';
+   }
 
    .unit {
       transition: 0.6s all;
