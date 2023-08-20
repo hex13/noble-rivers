@@ -82,12 +82,11 @@ class Tile {
         }
     }
     drop(item) {
-        this.item = true;
+        this.item = !!item;
         this.token = item;
     }
     take() {
-        this.item = false;
-        this.token = '';
+        this.drop('');
     }
     // gameplay doesn't have to be turn based
     // but internally turns are responsible for tile events
