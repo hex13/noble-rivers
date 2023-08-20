@@ -273,8 +273,8 @@ const player = new Unit({pos: {x: 6, y: 3}, classes: ['soldier']});
 updateObject(player);
 
 
-game.createUnit({x: 9, y: 9}, 'cpu');
-game.createUnit({x: 5, y: 1}, 'cpu');
+game.createUnit({x: 9, y: 9}, 'cpu', 'peasant');
+game.createUnit({x: 5, y: 1}, 'cpu', 'peasant');
 
 const playerUnit = game.createUnit({x: 10, y: 10}, 'player');
 
