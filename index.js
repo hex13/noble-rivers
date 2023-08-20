@@ -53,18 +53,16 @@ class Tile {
     }
     produce() {
         if (this.produces.kind == 'item') {
-            const item = this.produces.item;
+            const { produces } = this;
+            const { item } = produces;
             let ok = true;
             let nearCondition = this.produces.near? false : true;
-            this.map.neighbors(this.pos).forEach((n, i) => {
-                nearCondition ||= this.produces.near == n.terrain;
-                if (n.item && Object.hasOwn(item.requires, n.token) && item.requires[n.token] > (this.produces.resources[n.token] || 0)) {
-                    updateObject(n, n => {
-                        n.item = false;
-                        const gatheredBefore = this.produces.resources[n.token] || 0;
-                        this.produces.resources[n.token] = gatheredBefore + 1;
-                        n.token = '';
-                    });
+            this.map.neighbors(this.pos).forEach((n) => {
+                nearCondition ||= produces.near == n.terrain;
+                if (n.item && Object.hasOwn(item.requires, n.token) && item.requires[n.token] > (produces.resources[n.token] || 0)) {
+                    const gatheredBefore = produces.resources[n.token] || 0;
+                    produces.resources[n.token] = gatheredBefore + 1;
+                    updateObject(n, n => n.take());
                 }
             });
             for (const k in item.requires) {
@@ -76,13 +74,20 @@ class Tile {
             ok = ok && nearCondition;
             console.log(this.building, ok, nearCondition)
             if (ok) {
-                this.item = true;
-                this.token = this.produces.item.name;
+                this.drop(this.produces.item.name)
                 this.produces.resources = {};
             }
         } else if (this.produces.kind == 'unit') {
             game.createUnit(this.pos, 'cpu');
         }
+    }
+    drop(item) {
+        this.item = true;
+        this.token = item;
+    }
+    take() {
+        this.item = false;
+        this.token = '';
     }
     // gameplay doesn't have to be turn based
     // but internally turns are responsible for tile events
@@ -107,10 +112,7 @@ class Unit {
         const tile = map.get(this.pos);
         if (!tile || !tile.item) return false;
         this.item = tile.token;
-        updateObject(tile, tile => {
-            tile.item = false;
-            tile.token = '';
-        });
+        updateObject(tile, tile => tile.take());
         return true;
     }
     drop() {
@@ -119,8 +121,7 @@ class Unit {
             if (tile.progress) {
                 tile.progress += 10;
             } else {
-                tile.item = true;
-                tile.token = this.item;
+                tile.drop(this.item);
             }
         });
         this.item = false;
