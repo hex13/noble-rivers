@@ -142,7 +142,7 @@ class Unit {
     createParams() {
         return {
             ...createParams(this),
-            classes: ['unit', this.player, `${this.item? 'has' : 'no'}-item`],
+            classes: ['unit', this.player, `${this.item? 'has' : 'no'}-item`, this.kind],
             template: '#unit',
         };
     }
@@ -202,7 +202,7 @@ class Game {
         this.onUpdateUnit = onUpdateUnit;
     }
     createUnit(pos, player, kind) {
-        const unit = new Unit({kind, player, pos, classes: ['soldier']});
+        const unit = new Unit({kind, player, pos});
         updateObject(unit);
         this.units.push(unit);
         return unit;
