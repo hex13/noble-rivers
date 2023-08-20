@@ -203,6 +203,7 @@ class TileMap {
 function updateEl(el, params) {
     el.className = params.classes.join(' ');
     el.style.transform = `translate(${params.x}px, ${params.y}px)`;
+    el.style.transformOrigin = `${params.x}px ${params.y}px`;
     if (el.__buildingEl) {
         el.__buildingEl.style.display = params.progress? 'block' : 'none';
         // el.__buildingEl.style.height = `${~~((params.progress? 1 : 0) * 100)}%`;
