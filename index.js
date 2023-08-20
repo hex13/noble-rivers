@@ -271,23 +271,7 @@ map.get({x: 8, y: 3}).createBuilding('farm');
 map.get({x: 6, y: 6}).createBuilding('woodcutter');
 
 
-function* border(center, radius) {
-    let x = center.x - radius;
-    let y = center.y - radius;
-    let dx = 1;
-    let dy = 0;
-    const max = (radius * 2 + 1) * 4 - 4;
-    for (let i = 0; i < max; i++) {
-        yield {x, y};
-        if (i > 0 && i % (max / 4) == 0) {
-            const tmp = dx;
-            dx = -dy;
-            dy = tmp;
-        }
-        x += dx;
-        y += dy;
-    }
-}
+
 
 
 map.get({x: 4, y: 5}).item = true;
@@ -318,13 +302,7 @@ setTimeout(() => {
     });
 }, 1000);
 
-function *radiate(center, maxRadius) {
-    for (let r = 1; r < maxRadius; r++) {
-        for (const pt of border(center, r)) {
-            yield pt;
-        }
-    }
-}
+
 
 const detailEl = document.querySelector('.gui-detail');
 const detailTypeEl = detailEl.querySelector('.type');
