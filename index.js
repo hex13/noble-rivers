@@ -300,13 +300,13 @@ domEl.addEventListener('click', async e => {
     const tile = map.get(pos);
     if (!tile) return;
 
-    if (mode == 'inspect') {
+    if (gui.mode == 'inspect') {
         inspect(tile);
         return;
     }
 
     updateObject(tile, tile => {
-        tile.createBuilding(mode);
+        tile.createBuilding(gui.mode);
     });
     playerUnit.target = pos;
 
@@ -455,16 +455,5 @@ setInterval(() => {
 }, 800);
 
 const menuEl = document.querySelector('.gui-menu');
-let mode = 'inspect';
 
-Object.entries(buildings).concat([['inspect']]).forEach(([key, building]) => {
-    const el = $('button');
-    el.innerText = key;
-    el.className = mode == key? 'active' : '';
-    el.addEventListener('click', () => {
-        mode = key;
-        menuEl.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-        el.classList.add('active');
-    });
-    menuEl.append(el);
-});
+const gui = createGui({ buildings });
