@@ -202,7 +202,7 @@ function updateEl(el, params) {
         // el.__buildingEl.style.height = `${~~((params.progress? 1 : 0) * 100)}%`;
     }
     if (el.__token) {
-        el.__token.className = params.token? `token ${params.token}` : '';
+        el.__token.className = params.token? `token ${params.token}` : 'token';
     }
 
     // el.innerText = params.text;
