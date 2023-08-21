@@ -22,7 +22,15 @@ const products = {
             food: 2,
         }
     },
+    soldier: {
+        name: 'soldier',
+        requires: {
+            metal: 1,
+            food: 1,
+        }
+    },
 };
+
 
 const buildings = {
     farm: {
@@ -35,6 +43,6 @@ const buildings = {
         produces: {kind: 'item', item: products.metal, near: 'mountain'},
     },
     barracks: {
-        produces: {kind: 'unit', unit: 'soldier'},
+        produces: {kind: 'unit', item: products.soldier},
     },
 }

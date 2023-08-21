@@ -52,7 +52,7 @@ class Tile {
         }
     }
     produce() {
-        if (this.produces.kind == 'item') {
+        if (this.produces) {
             const { produces } = this;
             const { item } = produces;
             let ok = true;
@@ -74,11 +74,13 @@ class Tile {
             ok = ok && nearCondition;
             console.log(this.building, ok, nearCondition)
             if (ok) {
-                this.drop(this.produces.item.name)
+                if (this.produces.kind == 'item') {
+                    this.drop(this.produces.item.name);
+                } else if (this.produces.kind == 'unit') {
+                    game.createUnit(this.pos, 'cpu', this.produces.item.name);
+                }
                 this.produces.resources = {};
             }
-        } else if (this.produces.kind == 'unit') {
-            game.createUnit(this.pos, 'cpu', this.produces.unit);
         }
     }
     drop(item) {
