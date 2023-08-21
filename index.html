@@ -45,6 +45,11 @@
       border: 2px solid white;
       box-shadow: 0px 0px 4px 10px rgb(255 255 0 / 0.2), 1px 1px 2px rgb(0 0 0 / 0.4);
    }
+
+   .unit.has-item:before {
+      content: '*';
+   }
+
    .tile {
       font-size: 12px;
       border: 1px solid rgb(30 30 30 / 0.08);
@@ -96,16 +101,16 @@
       position: absolute;
       z-index: 200;
    }
-   .token.wood {
+   .token.wood, .unit.has-wood:before {
       background: linear-gradient(to bottom, #bb7744, #995533);
    }
-   .token.gold {
+   .token.gold, .unit.has-gold:before {
       background: linear-gradient(to bottom, #ffff00, #ccaa33);
    }
-   .token.food {
+   .token.food, .unit.has-food:before {
       background: linear-gradient(to bottom, #fa9, #e56);
    }
-   .token.metal {
+   .token.metal, .unit.has-metal:before {
       background: linear-gradient(to bottom, #ccd, #888);
    }
    .token.food:before {

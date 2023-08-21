@@ -154,7 +154,7 @@ class Unit {
     createParams() {
         return {
             ...createParams(this),
-            classes: ['unit', this.player, `${this.item? 'has' : 'no'}-item`, this.kind],
+            classes: ['unit', this.player, `${this.item? 'has' : 'no'}-item`, this.kind, 'has-' + this.item],
             template: '#unit',
         };
     }
