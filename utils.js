@@ -25,8 +25,18 @@ function *radiate(center, maxRadius) {
     }
 }
 
+function computeObjectsDelta(a, b) {
+    const result = {};
+    for (const k in a) {
+        const delta = a[k] - (b[k] || 0);
+        if (delta) result[k] = delta;
+    }
+    return result;
+}
+
 const sleep = t => new Promise(r => {
     setTimeout(r, t);
 });
 
 const $ = (tag) => document.createElement(tag);
+
