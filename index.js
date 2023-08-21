@@ -22,16 +22,20 @@ class Tile {
         this.building = '';
         this.token = '';
         this.map = map;
+        this.producingProgress = 0;
     }
     createParams() {
         return {
             ...createParams(this),
-            classes: ['tile', this.terrain, `${this.item? 'has' : 'no'}-item`, this.building],
+            classes: ['tile', this.terrain, `${this.item? 'has' : 'no'}-item`, this.building, this.building? 'has-building' : 'no-building'],
             progress: this.progress,
             token: this.token,
+            producingProgress: this.producingProgress,
+            produces: this.produces,
             children: [
                 {key: '__token'},
                 {key: '__buildingEl', classes: ['building'], template: '#house'},
+                {key: '__productProgress', classes: ['product-progress']},
             ],
         };
     }
@@ -79,6 +83,7 @@ class Tile {
                     game.createUnit(this.pos, 'cpu', this.produces.item.name);
                 }
                 this.produces.resources = {};
+                this.producingProgress = 100;
             } else {
                 let s = this.building + ": conditions are not met. ";
                 if (!nearCondition) {
@@ -86,6 +91,8 @@ class Tile {
                     // console.log(s);
                 } else {
                     const delta = computeObjectsDelta(this.produces.item.requires, this.produces.resources);
+                    const totalItemCount = computeObjectsDelta(this.produces.item.requires, {}).length;
+                    this.producingProgress = ~~(100 - (delta.length / totalItemCount) * 100);
                     game.tasks.push(...delta.map(item => ({item, type: 'gather', target: {x: this.pos.x - 1, y: this.pos.y}})));
                 }
             }
@@ -202,6 +209,15 @@ function updateEl(el, params) {
     }
     if (el.__token) {
         el.__token.className = params.token? `token ${params.token}` : 'token';
+    }
+    if (el.__productProgress) {
+        const producingProgress = params.producingProgress;
+        const color = 'rgb(255 255 255 / 0.4)';
+        el.__productProgress.style.background = `linear-gradient(to right, ${color} 0%, ${color}  ${producingProgress}%, black ${producingProgress}%, black 100%)`;
+        el.__productProgress.style.display = producingProgress == 100 || producingProgress == 0? 'none': 'block';
+        if (params.produces) {
+            el.__productProgress.innerText = params.produces.item.name;
+        }
     }
 
     // el.innerText = params.text;
