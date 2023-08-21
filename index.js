@@ -80,6 +80,15 @@ class Tile {
                     game.createUnit(this.pos, 'cpu', this.produces.item.name);
                 }
                 this.produces.resources = {};
+            } else {
+                let s = this.building + ": conditions are not met. ";
+                if (!nearCondition) {
+                    s += 'Building should be near ' + this.produces.near;
+                    console.log(s);
+                } else {
+                    const delta = computeObjectsDelta(this.produces.item.requires, this.produces.resources);
+                    game.tasks.push(...delta.map(item => ({item, type: 'gather', target: {x: this.pos.x - 1, y: this.pos.y}})));
+                }
             }
         }
     }
@@ -136,6 +145,7 @@ class Unit {
             x: horizontal? Math.sign(deltaX) : 0,
             y: horizontal? 0 : Math.sign(deltaY),
         };
+        return npc.v.x == 0 && npc.v.y == 0;
     }
     move() {
         this.pos.x += this.v.x;
@@ -201,6 +211,7 @@ function updateEl(el, params) {
 class Game {
     constructor({ onUpdateUnit }) {
         this.units = [];
+        this.tasks = [];
         this.onUpdateUnit = onUpdateUnit;
     }
     createUnit(pos, player, kind) {
@@ -277,6 +288,9 @@ updateObject(player);
 
 game.createUnit({x: 9, y: 9}, 'cpu', 'peasant');
 game.createUnit({x: 5, y: 1}, 'cpu', 'peasant');
+game.createUnit({x: 6, y: 1}, 'cpu', 'peasant');
+game.createUnit({x: 7, y: 1}, 'cpu', 'peasant');
+
 
 const playerUnit = game.createUnit({x: 10, y: 10}, 'player');
 
@@ -387,6 +401,7 @@ document.addEventListener('keydown', e => {
 });
 
 setInterval(() => {
+    game.tasks = [];
     for (let y = 0; y < map.height; y++) {
         for (let x = 0; x < map.width; x++) {
             updateObject(map.get({x, y}), tile => {
@@ -439,7 +454,8 @@ function onUpdateSoldier(npc) {
 function onUpdateNpc(npc) {
     switch (npc.state) {
         case 'bearing': {
-            npc.approach({x: 1, y: 1});
+            npc.approach(npc.task.target);
+            npc.move();
             if (npc.v.x == 0 && npc.v.y == 0) {
                 npc.drop();
                 npc.state = '';
@@ -457,36 +473,54 @@ function onUpdateNpc(npc) {
             }
             break;
         }
-        default: {
-            let target = map.locate(npc.pos, 10, tile => tile.item);
+        case 'gather': {
+            let target = map.locate(npc.pos, 10, tile => tile.item && tile.token == npc.task.item);
             if (target) {
                 npc.approach(target.pos);
+                npc.move();
+                if (npc.pos.x == target.pos.x && npc.pos.y == target.pos.y) {
+                    if (npc.take()) {
+                        npc.state = 'bearing'
+                        console.log("BIERING")
+                    }
+
+                }
+
             } else {
-                target =  map.locate(npc.pos, 10, tile => tile.terrain == 'forest');
-                if (target) {
-                    npc.target = {x: target.pos.x, y: target.pos.y + 1};
-                    npc.buildTarget = target;
-                    npc.state = 'building';
-                } 
+                npc.state = '';
+                // target =  map.locate(npc.pos, 10, tile => tile.terrain == 'forest');
+                // if (target) {
+                //     npc.target = {x: target.pos.x, y: target.pos.y + 1};
+                //     npc.buildTarget = target;
+                //     npc.state = 'building';
+                // } 
                 
             }
-            if (npc.take()) {
-                npc.state = 'bearing'
-            }
-
+            break;
         }
+        default: {
+            const task = game.tasks.shift();
+            if (!task || task.type != 'gather') {
+                npc.v.x = 0;
+                npc.v.y = 0;
+                break;
+            }
+            npc.task = task;
+            npc.state = 'gather';
+        }
+
     }
-    const newX = npc.pos.x + npc.v.x;
-    const newY = npc.pos.y + npc.v.y;
-    let ok = true;
-    if (newX >= map.width || newX < 0) {
-        ok = false;
-        npc.v.x *= -1;
-    }
-    if (ok) {
-        npc.pos.x = newX;
-        npc.pos.y = newY;
-    }
+    // const newX = npc.pos.x + npc.v.x;
+    // const newY = npc.pos.y + npc.v.y;
+    // let ok = true;
+    // if (newX >= map.width || newX < 0) {
+    //     ok = false;
+    //     npc.v.x *= -1;
+    // }
+    // if (ok) {
+    //     npc.pos.x = newX;
+    //     npc.pos.y = newY;
+    // }
 }
 
 function onUpdateShip(unit) {

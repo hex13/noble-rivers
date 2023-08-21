@@ -26,10 +26,12 @@ function *radiate(center, maxRadius) {
 }
 
 function computeObjectsDelta(a, b) {
-    const result = {};
+    const result = [];
     for (const k in a) {
         const delta = a[k] - (b[k] || 0);
-        if (delta) result[k] = delta;
+        for (let i = 0; i < delta; i++) {
+            result.push(k);
+        }
     }
     return result;
 }
