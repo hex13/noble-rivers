@@ -271,7 +271,6 @@ map.get({x: 6, y: 6}).createBuilding('woodcutter');
 
 map.get({x: 4, y: 5}).item = true;
 
-map.get({x: 6, y: 7}).token = 'gold';
 console.log(map)
 
 const domEl = document.getElementById('app');
@@ -292,7 +291,6 @@ game.createUnit({x: 6, y: 1}, 'cpu', 'peasant');
 game.createUnit({x: 7, y: 1}, 'cpu', 'peasant');
 
 
-const playerUnit = game.createUnit({x: 10, y: 10}, 'player');
 
 setTimeout(() => {
     updateObject(map.get({x: 4, y: 6}), tile =>{
@@ -324,7 +322,6 @@ domEl.addEventListener('click', async e => {
     updateObject(tile, tile => {
         tile.createBuilding(gui.mode);
     });
-    playerUnit.target = pos;
 
     // map.neighbors(pos).forEach(tile => {
     //     updateObject(tile, tile => tile.terrain = 'forest');
