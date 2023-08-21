@@ -268,9 +268,6 @@ map.get({x: 6, y: 6}).createBuilding('woodcutter');
 
 
 
-
-map.get({x: 4, y: 5}).item = true;
-
 console.log(map)
 
 const domEl = document.getElementById('app');
