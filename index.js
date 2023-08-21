@@ -72,7 +72,6 @@ class Tile {
                 }
             }
             ok = ok && nearCondition;
-            console.log(this.building, ok, nearCondition)
             if (ok) {
                 if (this.produces.kind == 'item') {
                     this.drop(this.produces.item.name);
@@ -84,7 +83,7 @@ class Tile {
                 let s = this.building + ": conditions are not met. ";
                 if (!nearCondition) {
                     s += 'Building should be near ' + this.produces.near;
-                    console.log(s);
+                    // console.log(s);
                 } else {
                     const delta = computeObjectsDelta(this.produces.item.requires, this.produces.resources);
                     game.tasks.push(...delta.map(item => ({item, type: 'gather', target: {x: this.pos.x - 1, y: this.pos.y}})));
@@ -475,7 +474,6 @@ function onUpdateNpc(npc) {
                 if (npc.pos.x == target.pos.x && npc.pos.y == target.pos.y) {
                     if (npc.take()) {
                         npc.state = 'bearing'
-                        console.log("BIERING")
                     }
 
                 }
