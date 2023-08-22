@@ -87,8 +87,8 @@ class Tile {
             } else {
                 let s = this.building + ": conditions are not met. ";
                 if (!nearCondition) {
-                    s += 'Building should be near ' + this.produces.near;
-                    // console.log(s);
+                    s = `${this.building} should be near ` + this.produces.near;
+                    gui.message(s);
                 } else {
                     const delta = computeObjectsDelta(this.produces.item.requires, this.produces.resources);
                     const totalItemCount = computeObjectsDelta(this.produces.item.requires, {}).length;
@@ -411,6 +411,7 @@ document.addEventListener('keydown', e => {
 
 setInterval(() => {
     game.tasks = [];
+    gui.clearMessages();
     for (let y = 0; y < map.height; y++) {
         for (let x = 0; x < map.width; x++) {
             updateObject(map.get({x, y}), tile => {

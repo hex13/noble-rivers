@@ -305,6 +305,16 @@
       border-top: 2px solid rgb(0 0 0 / 0.4);
    }
 
+   .messages {
+      position: fixed;
+      left: 20px;
+      top: 20px;
+      width: 40em;
+      font-size: 16px;
+      font-family:sans-serif;
+      padding: 0px;
+      background: rgb(0 0 0 / 0.3);
+   }
 </style>
 </head>
 <body>
@@ -324,8 +334,8 @@
 
    <div class="app" id="app"></div>
 
+   <div class="messages"></div>
    <div class="gui">
-      <div style="font-size: 16px;font-family:sans-serif;padding: 4px;">move via keyboard (arrows, T for taking, D for dropping, B for building, A for attack buildings). Right now game lacks mobile support but it is in planning.</div>
       <!-- <div>Legend:</div>
       <div class="gui-legend">
          

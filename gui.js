@@ -1,5 +1,16 @@
 function createGui({ buildings }) {
-    const gui = {mode: 'inspect'};
+    const messagesEl = document.querySelector('.messages');
+    const gui = {
+        clearMessages() {
+            messagesEl.innerHTML = '';
+        },
+        message(s) {
+            const el = $('div');
+            el.innerText = s;
+            messagesEl.append(el);
+        },
+        mode: 'inspect',
+    };
     Object.entries(buildings).concat([['inspect']]).forEach(([key, building]) => {
         const el = $('button');
         el.innerText = key;
