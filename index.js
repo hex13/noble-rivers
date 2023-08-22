@@ -27,7 +27,14 @@ class Tile {
     createParams() {
         return {
             ...createParams(this),
-            classes: ['tile', this.terrain, `${this.item? 'has' : 'no'}-item`, this.building, this.building? 'has-building' : 'no-building'],
+            classes: [
+                'tile',
+                this.terrain,
+                `${this.item? 'has' : 'no'}-item`,
+                this.building,
+                this.building? 'has-building' : 'no-building',
+                this.highlight? 'highlight' : '',
+            ],
             progress: this.progress,
             token: this.token,
             producingProgress: this.producingProgress,
@@ -76,6 +83,8 @@ class Tile {
                 }
             }
             ok = ok && nearCondition;
+            this.highlight = !nearCondition;
+
             if (ok) {
                 if (this.produces.kind == 'item') {
                     this.drop(this.produces.item.name);

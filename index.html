@@ -315,6 +315,31 @@
       padding: 0px;
       background: rgb(0 0 0 / 0.3);
    }
+
+   .tile.highlight:before {
+      content: '!';
+      font-weight: bold;
+      font-size: 20px;
+      font-family: 'Times New Roman', serif;
+      position: absolute;
+      z-index: 1000;
+      background: black;
+      padding: 8px;
+      border-radius: 50%;
+      color: white;
+      right: 10px;
+      top: 10px;
+      animation: 0.5s infinite alternate tile-highlight;
+   }
+
+   @keyframes tile-highlight {
+      0% {
+         box-shadow: 0 0 2px 3px rgb(255 150 50);
+      }
+      100% {
+         box-shadow: 0 0 3px 6px rgb(255 150 50);
+      }
+   }
 </style>
 </head>
 <body>
