@@ -35,7 +35,7 @@ class Tile {
                 this.building,
                 this.building? 'has-building' : 'no-building',
                 this.highlight? 'highlight' : '',
-                this.visited >= 30? 'visited-many' : this.visited >= 20? 'visited-twice' : this.visited >= 10? 'visited' : '',
+                this.visited >= 30? 'visited-many' : this.visited >= 20? 'visited-twice' : this.visited >= 6? 'visited' : '',
             ],
             progress: this.progress,
             token: this.token,
