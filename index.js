@@ -150,11 +150,7 @@ class Unit {
     drop() {
         if (!this.item) return;
         updateObject(map.get(this.pos), tile => {
-            if (tile.progress) {
-                tile.progress += 10;
-            } else {
-                tile.drop(this.item);
-            }
+            tile.drop(this.item);
         });
         this.item = false;
     }
