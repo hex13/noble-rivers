@@ -24,6 +24,7 @@ class Tile {
         this.map = map;
         this.visited = 0;
         this.producingProgress = 0;
+        this.construction = '';
     }
     createParams() {
         return {
@@ -36,6 +37,7 @@ class Tile {
                 this.building? 'has-building' : 'no-building',
                 this.highlight? 'highlight' : '',
                 this.visited >= 30? 'visited-many' : this.visited >= 20? 'visited-twice' : this.visited >= 6? 'visited' : '',
+                this.construction? `construction-${this.construction}` : '',
             ],
             progress: this.progress,
             token: this.token,
@@ -53,6 +55,7 @@ class Tile {
         this.progress = 100;
         const buildingMeta = buildings[buildingType];
         this.produces = {...buildingMeta.produces, resources: {}};
+        this.construction = '';
     }
     destroyBuilding() {
         this.building = '';
@@ -105,7 +108,7 @@ class Tile {
                     const delta = computeObjectsDelta(this.produces.item.requires, this.produces.resources);
                     const totalItemCount = computeObjectsDelta(this.produces.item.requires, {}).length;
                     this.producingProgress = ~~(100 - (delta.length / totalItemCount) * 100);
-                    game.tasks.push(...delta.map(item => ({item, type: 'gather', target: {x: this.pos.x - 1, y: this.pos.y}})));
+                    game.tasks.push(...delta.map(item => ({volatile: true, item, type: 'gather', target: {x: this.pos.x - 1, y: this.pos.y}})));
                 }
             }
         }
@@ -376,7 +379,9 @@ domEl.addEventListener('click', async e => {
 
 
     updateObject(tile, tile => {
-        tile.createBuilding(gui.mode);
+        const buildingKind = gui.mode;
+        tile.construction = buildingKind;
+        game.tasks.push({type: 'build', tile, building: buildingKind})
     });
 
     // map.neighbors(pos).forEach(tile => {
@@ -454,7 +459,7 @@ document.addEventListener('keydown', e => {
 });
 
 setInterval(() => {
-    game.tasks = [];
+    game.tasks = game.tasks.filter(task => !task.volatile);
     gui.clearMessages();
     for (let y = 0; y < map.height; y++) {
         for (let x = 0; x < map.width; x++) {
@@ -520,10 +525,12 @@ function onUpdateNpc(npc) {
             npc.approach(npc.target);
             if (npc.v.x == 0 && npc.v.y == 0) {
                 updateObject(map.get(npc.pos), tile => {
-                    tile.createBuilding('woodcutter');
+                    tile.createBuilding(npc.task.building);
                 });
                 npc.state = '';
+                npc.task = null;
             }
+            npc.move();
             break;
         }
         case 'gather': {
@@ -552,13 +559,21 @@ function onUpdateNpc(npc) {
         }
         default: {
             const task = game.tasks.shift();
-            if (!task || task.type != 'gather') {
-                npc.v.x = 0;
-                npc.v.y = 0;
-                break;
+            switch (task?.type) {
+                case 'gather': {
+                    npc.task = task;
+                    npc.state = 'gather';
+                    break;
+                }
+                case 'build':
+                    npc.task = task;
+                    npc.state = 'building';
+                    npc.target = task.tile.pos;
+                    break;
+                default:
+                    npc.v.x = 0;
+                    npc.v.y = 0;
             }
-            npc.task = task;
-            npc.state = 'gather';
         }
 
     }

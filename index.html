@@ -215,7 +215,7 @@
       }
    }
 
-   .tile .building:before {
+   .tile .building:before, .tile[class*="construction"]:before {
       background: rgb(0 0 0 / 0.66);
       font-size: 1.2em;
       padding: 4px;
@@ -231,19 +231,19 @@
    }
 
 
-   .tile.woodcutter .building:before {
+   .tile.woodcutter .building:before, .tile.construction-woodcutter:before {
       content: 'woodcutter';
    }
 
-   .tile.farm .building:before {
+   .tile.farm .building:before, .tile.construction-farm:before  {
       content: 'farm';
    }
 
-   .tile.mine .building:before {
+   .tile.mine .building:before, .tile.construction-mine:before  {
       content: 'mine';
    }
 
-   .tile.barracks .building:before {
+   .tile.barracks .building:before, .tile.construction-barracks:before  {
       content: 'barracks';
    }
 
@@ -350,6 +350,11 @@
    .tile.visited-many {
       filter: brightness(1.15) saturate(70%);
 
+   }
+
+   .tile[class*="construction"] {
+      background: #ddd;
+      border: 2px dotted #995533;
    }
 
 </style>
