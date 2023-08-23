@@ -166,9 +166,14 @@ class Unit {
         };
         return npc.v.x == 0 && npc.v.y == 0;
     }
-    move() {
-        this.pos.x += this.v.x;
-        this.pos.y += this.v.y;
+    move(newPos) {
+        if (newPos) {
+            this.pos.x = newPos.x;
+            this.pos.y = newPos.y;
+        } else {
+            this.pos.x += this.v.x;
+            this.pos.y += this.v.y;
+        }
         updateObject(map.get(this.pos), tile => {
             tile.visited += 10;
         });
@@ -468,8 +473,7 @@ function moveWithBouncing(unit) {
         unit.v.x *= -1;
     }
     if (ok) {
-        unit.pos.x = newX;
-        unit.pos.y = newY;
+        unit.move({x: newX, y: newY});
     }
 }
 
