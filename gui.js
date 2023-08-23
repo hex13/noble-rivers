@@ -11,7 +11,7 @@ function createGui({ buildings }) {
         },
         mode: 'inspect',
     };
-    Object.entries(buildings).concat([['inspect']]).forEach(([key, building]) => {
+    Object.keys(buildings).concat('inspect', 'destroy').forEach((key) => {
         const el = $('button');
         el.innerText = key;
         el.className = gui.mode == key? 'active' : '';

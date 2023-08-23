@@ -55,6 +55,7 @@ class Tile {
     destroyBuilding() {
         this.building = '';
         this.progress = 0;
+        this.highlight = false;
     }
     build(amount) {
         this.progress += amount;
@@ -339,6 +340,14 @@ domEl.addEventListener('click', async e => {
         inspect(tile);
         return;
     }
+
+    if (gui.mode == 'destroy') {
+        updateObject(tile, tile => {
+            tile.destroyBuilding();
+        });
+        return;
+    }
+
 
     updateObject(tile, tile => {
         tile.createBuilding(gui.mode);
