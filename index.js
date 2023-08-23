@@ -338,12 +338,26 @@ const detailEl = document.querySelector('.gui-detail');
 const detailTypeEl = detailEl.querySelector('.type');
 
 function inspect(tile) {
-    detailTypeEl.innerText = `${tile.building} - ${JSON.stringify(tile.produces)}`;
+    const units = game.units
+        .filter(unit => unit.pos.x == tile.pos.x && unit.pos.y == tile.pos.y);
+    const unitsHtml = units.map(unit => `<div>${unit.kind} - ${unit.state}</div>`);
+    const html = `${tile.building} - ${JSON.stringify(tile.produces)} <br> ${unitsHtml}`;
+    detailTypeEl.innerHTML = html;
+    console.log('units: ', units);
+
 }
 
 domEl.addEventListener('click', async e => {
     const el = e.target.closest('.tile');
-    if (!el) return;
+    
+    if (!el) {
+        const unitEl = e.target.closest('.unit');
+        if (unitEl) {
+            const unit = unitEl.__obj;
+            console.log("unit", unit);
+        }
+        return;
+    }
     const pos = el.__obj.pos;
     const tile = map.get(pos);
     if (!tile) return;
