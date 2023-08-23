@@ -22,6 +22,7 @@ class Tile {
         this.building = '';
         this.token = '';
         this.map = map;
+        this.visited = 0;
         this.producingProgress = 0;
     }
     createParams() {
@@ -34,6 +35,7 @@ class Tile {
                 this.building,
                 this.building? 'has-building' : 'no-building',
                 this.highlight? 'highlight' : '',
+                this.visited >= 30? 'visited-many' : this.visited >= 20? 'visited-twice' : this.visited >= 10? 'visited' : '',
             ],
             progress: this.progress,
             token: this.token,
@@ -124,6 +126,7 @@ class Tile {
                 this.produce();
             }
         }
+        this.visited = Math.max(0, this.visited - 1);
     }
 }
 
@@ -166,6 +169,10 @@ class Unit {
     move() {
         this.pos.x += this.v.x;
         this.pos.y += this.v.y;
+        updateObject(map.get(this.pos), tile => {
+            tile.visited += 10;
+        });
+
     }
     createParams() {
         return {
