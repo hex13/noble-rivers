@@ -122,7 +122,8 @@ class Tile {
     take(token) {
         if (token) {
             if (!this.has(token)) throw new Error('take: no ' + token);
-            this._items = this._items.filter(item => item != token);
+            const idx = this._items.findIndex(item => item == token);
+            this._items.splice(idx, 1);
             return token;
         }
         return this._items.pop();
