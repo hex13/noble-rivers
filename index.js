@@ -117,8 +117,14 @@ class Tile {
         this.item = !!item;
         this.token = item;
     }
-    take() {
-        this.drop('');
+    take(token) {
+        if (token) {
+            if (token !== this.token) throw new Error('take: no ' + token);
+        }
+        const result = this.token;
+        this.item = false;
+        this.token = '';
+        return result;
     }
     has(token) {
         return /*this.item && */ this.token == token;
@@ -143,11 +149,12 @@ class Unit {
         Object.assign(this, props);
         this.pos = props.pos? {...props.pos} : {x: 0, y: 0};
     }
-    take() {
+    take(token) {
         const tile = map.get(this.pos);
         if (!tile || !tile.item) return false;
-        this.item = tile.token;
-        updateObject(tile, tile => tile.take());
+        updateObject(tile, tile => {
+            this.item = tile.take(token);
+        });
         return true;
     }
     drop() {
@@ -540,7 +547,7 @@ function onUpdateNpc(npc) {
                 npc.approach(target.pos);
                 npc.move();
                 if (npc.pos.x == target.pos.x && npc.pos.y == target.pos.y) {
-                    if (npc.take()) {
+                    if (npc.take(npc.task.item)) {
                         npc.state = 'bearing'
                     }
 
