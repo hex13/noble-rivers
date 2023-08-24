@@ -120,6 +120,9 @@ class Tile {
     take() {
         this.drop('');
     }
+    has(token) {
+        return /*this.item && */ this.token == token;
+    }
     // gameplay doesn't have to be turn based
     // but internally turns are responsible for tile events
     // like producing resources
@@ -531,7 +534,7 @@ function onUpdateNpc(npc) {
         }
         case 'gather': {
             let target = map.locate(npc.pos, 10, tile => {
-                return tile.item && tile.token == npc.task.item && !map.neighbors(tile.pos).find(n => n.building);
+                return tile.has(npc.task.item) && !map.neighbors(tile.pos).find(n => n.building);
             });
             if (target) {
                 npc.approach(target.pos);
