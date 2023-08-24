@@ -40,7 +40,7 @@ class Tile {
                 this.construction? `construction-${this.construction}` : '',
             ],
             progress: this.progress,
-            token: this._token,
+            token: this.items()[0],
             producingProgress: this.producingProgress,
             produces: this.produces,
             children: [
@@ -132,6 +132,9 @@ class Tile {
     has(token) {
         if (!token) return !!this._token;
         return /*this.item && */ this._token == token;
+    }
+    items() {
+        return [this._token];
     }
     // gameplay doesn't have to be turn based
     // but internally turns are responsible for tile events
