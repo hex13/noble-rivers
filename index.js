@@ -608,7 +608,8 @@ function onUpdateShip(unit) {
 }
 
 setInterval(() => {
-    game.updateAi();
+    if (gui.mode != 'pause')
+        game.updateAi();
 }, 800);
 
 const menuEl = document.querySelector('.gui-menu');
