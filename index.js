@@ -20,7 +20,7 @@ class Tile {
         this.item = false;
         this.progress = 0;
         this.building = '';
-        this.token = '';
+        this._token = '';
         this.map = map;
         this.visited = 0;
         this.producingProgress = 0;
@@ -40,7 +40,7 @@ class Tile {
                 this.construction? `construction-${this.construction}` : '',
             ],
             progress: this.progress,
-            token: this.token,
+            token: this._token,
             producingProgress: this.producingProgress,
             produces: this.produces,
             children: [
@@ -118,19 +118,19 @@ class Tile {
     }
     drop(item) {
         this.item = !!item;
-        this.token = item;
+        this._token = item;
     }
     take(token) {
         if (token) {
-            if (token !== this.token) throw new Error('take: no ' + token);
+            if (token !== this._token) throw new Error('take: no ' + token);
         }
-        const result = this.token;
+        const result = this._token;
         this.item = false;
-        this.token = '';
+        this._token = '';
         return result;
     }
     has(token) {
-        return /*this.item && */ this.token == token;
+        return /*this.item && */ this._token == token;
     }
     // gameplay doesn't have to be turn based
     // but internally turns are responsible for tile events
