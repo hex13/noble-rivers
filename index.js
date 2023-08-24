@@ -69,6 +69,7 @@ class Tile {
         }
     }
     produce() {
+        if (this.has(this.produces.item.name)) return;
         if (this.produces) {
             const { produces } = this;
             const { item } = produces;
