@@ -356,7 +356,7 @@ function inspect(tile) {
     const units = game.units
         .filter(unit => unit.pos.x == tile.pos.x && unit.pos.y == tile.pos.y);
     const unitsHtml = units.map(unit => `<div>${unit.kind} - ${unit.state}</div>`);
-    const html = `${tile.building} - ${JSON.stringify(tile.produces)} <br> ${unitsHtml}`;
+    const html = `${tile.building} - ${JSON.stringify(tile.produces)} items: ${tile.items()} <br> ${unitsHtml}`;
     detailTypeEl.innerHTML = html;
     console.log('units: ', units);
 
