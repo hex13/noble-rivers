@@ -76,13 +76,15 @@ class Tile {
             let nearCondition = this.produces.near? false : true;
             this.map.neighbors(this.pos).forEach((n) => {
                 nearCondition ||= produces.near == n.terrain;
-                const token = n.token;
-                if (n.item && Object.hasOwn(item.requires, token) && item.requires[token] > (produces.resources[token] || 0)) {
-                    const gatheredBefore = produces.resources[token] || 0;
-                    produces.resources[token] = gatheredBefore + 1;
-                    updateObject(n, n => n.take(token));
-                }
+                Object.keys(item.requires).forEach(token => {
+                    if (n.has(token) && item.requires[token] > (produces.resources[token] || 0)) {
+                        const gatheredBefore = produces.resources[token] || 0;
+                        produces.resources[token] = gatheredBefore + 1;
+                        updateObject(n, n => n.take(token));
+                    }
+                });
             });
+
             for (const k in item.requires) {
                 if ((this.produces.resources[k] || 0) < item.requires[k]) {
                     ok = false;
