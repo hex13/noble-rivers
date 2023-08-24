@@ -17,7 +17,7 @@ class Tile {
     constructor(pos, map) {
         this.terrain = 'grass';
         this.pos = {...pos};
-        this.item = false;
+        this._item = false;
         this.progress = 0;
         this.building = '';
         this._token = '';
@@ -32,7 +32,7 @@ class Tile {
             classes: [
                 'tile',
                 this.terrain,
-                `${this.item? 'has' : 'no'}-item`,
+                `${this.has()? 'has' : 'no'}-item`,
                 this.building,
                 this.building? 'has-building' : 'no-building',
                 this.highlight? 'highlight' : '',
@@ -117,7 +117,7 @@ class Tile {
         }
     }
     drop(item) {
-        this.item = !!item;
+        this._item = !!item;
         this._token = item;
     }
     take(token) {
@@ -125,11 +125,12 @@ class Tile {
             if (token !== this._token) throw new Error('take: no ' + token);
         }
         const result = this._token;
-        this.item = false;
+        this._item = false;
         this._token = '';
         return result;
     }
     has(token) {
+        if (!token) return !!this._token;
         return /*this.item && */ this._token == token;
     }
     // gameplay doesn't have to be turn based
@@ -154,7 +155,7 @@ class Unit {
     }
     take(token) {
         const tile = map.get(this.pos);
-        if (!tile || !tile.item) return false;
+        if (!tile || !tile.has()) return false;
         updateObject(tile, tile => {
             this.item = tile.take(token);
         });
@@ -397,12 +398,6 @@ domEl.addEventListener('click', async e => {
     //     updateObject(tile, tile => tile.terrain = 'forest');
     // })
 
-    // const targetTile = map.locate(pos, 4, tile => tile.item);
-    // if (targetTile) {
-    //     updateObject(targetTile, tile => {
-    //         tile.terrain = 'forest';
-    //     })
-    // }
 });
 
 const keyMap = {
