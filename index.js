@@ -20,6 +20,7 @@ class Tile {
         this.progress = 0;
         this.building = '';
         this._token = '';
+        this._items = [];
         this.map = map;
         this.visited = 0;
         this.producingProgress = 0;
@@ -116,22 +117,22 @@ class Tile {
         }
     }
     drop(item) {
-        this._token = item;
+        this._items.push(item);
     }
     take(token) {
         if (token) {
-            if (token !== this._token) throw new Error('take: no ' + token);
+            if (!this.has(token)) throw new Error('take: no ' + token);
+            this._items = this._items.filter(item => item != token);
+            return token;
         }
-        const result = this._token;
-        this._token = '';
-        return result;
+        return this._items.pop();
     }
     has(token) {
-        if (!token) return !!this._token;
-        return /*this.item && */ this._token == token;
+        if (!token) return this.items().length;
+        return this.items().includes(token);
     }
     items() {
-        return [this._token];
+        return this._items;
     }
     // gameplay doesn't have to be turn based
     // but internally turns are responsible for tile events
