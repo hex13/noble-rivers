@@ -540,7 +540,7 @@ function onUpdateNpc(npc) {
         }
         case 'gather': {
             let target = map.locate(npc.pos, 10, tile => {
-                return tile.has(npc.task.item) && !map.neighbors(tile.pos).find(n => n.building);
+                return tile.has(npc.task.item) /*&& !map.neighbors(tile.pos).find(n => n.building)*/;
             });
             if (target) {
                 npc.approach(target.pos);
