@@ -17,7 +17,6 @@ class Tile {
     constructor(pos, map) {
         this.terrain = 'grass';
         this.pos = {...pos};
-        this._item = false;
         this.progress = 0;
         this.building = '';
         this._token = '';
@@ -117,7 +116,6 @@ class Tile {
         }
     }
     drop(item) {
-        this._item = !!item;
         this._token = item;
     }
     take(token) {
@@ -125,7 +123,6 @@ class Tile {
             if (token !== this._token) throw new Error('take: no ' + token);
         }
         const result = this._token;
-        this._item = false;
         this._token = '';
         return result;
     }
