@@ -173,6 +173,10 @@ class Unit {
     }
     approach(target) {
         const npc = this;
+        if (!npc.path) {
+            console.log("new path to", target);
+            npc.path = [];
+        }
         const deltaX = target.x - npc.pos.x;
         const deltaY = target.y - npc.pos.y;
         const horizontal = Math.abs(deltaX) > Math.abs(deltaY);
@@ -181,7 +185,11 @@ class Unit {
             y: horizontal? 0 : Math.sign(deltaY),
         };
         npc.move();
-        return npc.pos.x == target.x && npc.pos.y == target.y;
+        const done = npc.pos.x == target.x && npc.pos.y == target.y;
+        if (done) {
+            npc.path = null;
+        }
+        return done;
     }
     move(newPos) {
         if (newPos) {
