@@ -180,7 +180,8 @@ class Unit {
             x: horizontal? Math.sign(deltaX) : 0,
             y: horizontal? 0 : Math.sign(deltaY),
         };
-        return npc.v.x == 0 && npc.v.y == 0;
+        npc.move();
+        return npc.pos.x == target.x && npc.pos.y == target.y;
     }
     move(newPos) {
         if (newPos) {
@@ -484,9 +485,6 @@ function onUpdateUnit(unit) {
     } else if (unit.player == 'cpu') {
         // return onUpdateShip(unit);
         return onUpdateNpc(unit);
-    } else {
-        if (unit.target) unit.approach(unit.target);
-        unit.move();
     }
 }
 
@@ -519,25 +517,20 @@ function onUpdateSoldier(npc) {
 function onUpdateNpc(npc) {
     switch (npc.state) {
         case 'bearing': {
-            npc.approach(npc.task.target);
-            npc.move();
-            if (npc.v.x == 0 && npc.v.y == 0) {
+            if (npc.approach(npc.task.target)) {
                 npc.drop();
                 npc.state = '';
             }
-
             break;
         }
         case 'building': {
-            npc.approach(npc.target);
-            if (npc.v.x == 0 && npc.v.y == 0) {
+            if (npc.approach(npc.target)) {
                 updateObject(map.get(npc.pos), tile => {
                     tile.createBuilding(npc.task.building);
                 });
                 npc.state = '';
                 npc.task = null;
             }
-            npc.move();
             break;
         }
         case 'gather': {
@@ -545,15 +538,11 @@ function onUpdateNpc(npc) {
                 return tile.has(npc.task.item) /*&& !map.neighbors(tile.pos).find(n => n.building)*/;
             });
             if (target) {
-                npc.approach(target.pos);
-                npc.move();
-                if (npc.pos.x == target.pos.x && npc.pos.y == target.pos.y) {
+                if(npc.approach(target.pos)) {
                     if (npc.take(npc.task.item)) {
                         npc.state = 'bearing'
                     }
-
                 }
-
             } else {
                 npc.state = '';
                 // target =  map.locate(npc.pos, 10, tile => tile.terrain == 'forest');
