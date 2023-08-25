@@ -196,18 +196,35 @@ class Unit {
         }
         return dir;
     }
+    findPath(target) {
+        const path = [];
+        let x = this.pos.x;
+        let y = this.pos.y;
+        let dir = {x: 0, y: 0};
+        do {
+            dir = this.computeDirection2({x, y}, target);
+            x += dir.x;
+            y += dir.y;
+            path.push({v: dir});
+        } while (dir.x != 0 || dir.y != 0);
+        return path;
+    }
     approach(target) {
         const npc = this;
         if (!npc.path) {
-            npc.path = null; //this.findPath(target);
-            // console.log("new path to", target);
-            // npc.path = [{v: {x: 1, y: 0}}, {v: {x: 1, y: 0}}, {v: {x: 0, y: 1}}, {v: {x: -1, y: 0}}, {v: {x: -1, y: 0}}, {v: {x: 0, y: -1}}, {v: {x: 0, y: -1}}];
+            npc.path = this.findPath(target);
         }
-        if (npc.path) {
+        if (npc.path && npc.path.length) {
             npc.v = npc.path.shift().v;
         } else {
+            npc.path = null;
+            if (npc.pos.x != target.x || npc.pos.y != target.y) {
+                this.state = '';
+                return false;
+            }
+
             // npc.v = this.computeDirection(npc.pos, target);
-            npc.v = this.computeDirection2(npc.pos, target);
+            // npc.v = this.computeDirection2(npc.pos, target);
         }
         npc.move();
 
