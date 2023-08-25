@@ -601,6 +601,7 @@ function onUpdateNpc(npc) {
                     npc.task = task;
                     npc.state = 'building';
                     npc.target = task.tile.pos;
+                    npc.path = null
                     break;
                 default:
                     npc.v.x = 0;
