@@ -174,17 +174,22 @@ class Unit {
     approach(target) {
         const npc = this;
         if (!npc.path) {
-            console.log("new path to", target);
-            npc.path = [];
+            // console.log("new path to", target);
+            // npc.path = [{v: {x: 1, y: 0}}, {v: {x: 1, y: 0}}, {v: {x: 0, y: 1}}, {v: {x: -1, y: 0}}, {v: {x: -1, y: 0}}, {v: {x: 0, y: -1}}, {v: {x: 0, y: -1}}];
         }
-        const deltaX = target.x - npc.pos.x;
-        const deltaY = target.y - npc.pos.y;
-        const horizontal = Math.abs(deltaX) > Math.abs(deltaY);
-        npc.v = {
-            x: horizontal? Math.sign(deltaX) : 0,
-            y: horizontal? 0 : Math.sign(deltaY),
-        };
+        if (npc.path) {
+            npc.v = npc.path.shift().v;
+        } else {
+            const deltaX = target.x - npc.pos.x;
+            const deltaY = target.y - npc.pos.y;
+            const horizontal = Math.abs(deltaX) > Math.abs(deltaY);
+            npc.v = {
+                x: horizontal? Math.sign(deltaX) : 0,
+                y: horizontal? 0 : Math.sign(deltaY),
+            };
+        }
         npc.move();
+
         const done = npc.pos.x == target.x && npc.pos.y == target.y;
         if (done) {
             npc.path = null;
