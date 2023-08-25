@@ -171,22 +171,43 @@ class Unit {
         });
         this.item = false;
     }
+    computeDirection(pos, target) {
+        const deltaX = target.x - pos.x;
+        const deltaY = target.y - pos.y;
+        const horizontal = Math.abs(deltaX) > Math.abs(deltaY);
+        return {
+            x: horizontal? Math.sign(deltaX) : 0,
+            y: horizontal? 0 : Math.sign(deltaY),
+        };
+    }
+    computeDirection2(pos, target) {
+        const currDist = Math.hypot(target.x - pos.x, target.y - pos.y);
+        let max = currDist;
+        let dir = {x: 0, y: 0};
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                if ((dx == 0 && dy == 0) || (dx != 0 && dy != 0)) continue;
+                const dist = Math.hypot(target.x - (pos.x + dx), target.y - (pos.y + dy));
+                if (dist < max) {
+                    max = dist;
+                    dir = {x: dx, y: dy};
+                }
+            }
+        }
+        return dir;
+    }
     approach(target) {
         const npc = this;
         if (!npc.path) {
+            npc.path = null; //this.findPath(target);
             // console.log("new path to", target);
             // npc.path = [{v: {x: 1, y: 0}}, {v: {x: 1, y: 0}}, {v: {x: 0, y: 1}}, {v: {x: -1, y: 0}}, {v: {x: -1, y: 0}}, {v: {x: 0, y: -1}}, {v: {x: 0, y: -1}}];
         }
         if (npc.path) {
             npc.v = npc.path.shift().v;
         } else {
-            const deltaX = target.x - npc.pos.x;
-            const deltaY = target.y - npc.pos.y;
-            const horizontal = Math.abs(deltaX) > Math.abs(deltaY);
-            npc.v = {
-                x: horizontal? Math.sign(deltaX) : 0,
-                y: horizontal? 0 : Math.sign(deltaY),
-            };
+            // npc.v = this.computeDirection(npc.pos, target);
+            npc.v = this.computeDirection2(npc.pos, target);
         }
         npc.move();
 
