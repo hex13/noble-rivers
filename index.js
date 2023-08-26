@@ -144,6 +144,8 @@ class Tile {
             if (this.produces) {
                 this.produce();
             }
+        } else {
+            this.highlight = false;
         }
         this.visited = Math.max(0, this.visited - 1);
     }
@@ -198,6 +200,44 @@ class Unit {
     }
     findPath(target) {
         const path = [];
+        let queue = [{
+            pos: {
+                x: this.pos.x,
+                y: this.pos.y,
+            },
+        }];
+        const visited = Object.create(null);
+
+        let c = 0;
+        while (queue.length) {
+            c++;
+            const node = queue.shift();
+            if (node.pos.x == target.x && node.pos.y == target.y) {
+                let curr = node;
+                const path = [node];
+                while (curr.prev) {
+                    path.push(curr.prev);
+                    curr = curr.prev;
+                }
+                path.reverse();
+                console.log(`found from ${this.pos.x},${this.pos.y} to ${target.x}, ${target.y}`, path);
+                return path.slice(1);
+            }
+            const neighbors = map.neighbors(node.pos, false);
+            neighbors.forEach(n => {
+                if (n.terrain != 'grass') return;
+                const key = n.pos.x + ',' + n.pos.y;
+                if (!visited[key]) {
+                    visited[key] = true;
+                    const v = {x: n.pos.x - node.pos.x, y: n.pos.y - node.pos.y};
+                    queue.push({pos: n.pos, v, prev: node});
+
+                }
+            });
+        }
+        console.error("not found TODO implementation", c);
+        return;
+
         let x = this.pos.x;
         let y = this.pos.y;
         let dir = {x: 0, y: 0};
@@ -209,10 +249,27 @@ class Unit {
         } while (dir.x != 0 || dir.y != 0);
         return path;
     }
+    reset() {
+        this.state = '';
+        this.task = null;
+        this.path = null;
+    }
     approach(target) {
         const npc = this;
-        if (!npc.path) {
+        if (!npc.path || !npc.path.length) {
             npc.path = this.findPath(target);
+            if (!npc.path) {
+                gui.message(`path not found`);
+                const tile = map.get(target);
+                if (tile) {
+                    updateObject(tile, tile => {
+                        tile.highlight = true;
+                    });
+                }
+                npc.reset();
+                throw new Error('path not found')
+                return;
+            }
         }
         if (npc.path && npc.path.length) {
             npc.v = npc.path.shift().v;
@@ -275,11 +332,12 @@ class TileMap {
             if (tile && check(tile)) return tile;
         }
     }
-    neighbors(pos) {
+    neighbors(pos, shouldIncludeDiagonal=true, shouldAddSelf) {
         const result = [];
         for (let y = -1; y <= 1; y++) {
             for (let x = -1; x <= 1; x++) {
-                if (x != 0 || y != 0) {
+                if (!shouldIncludeDiagonal && (x != 0 && y != 0)) continue;
+                if (shouldAddSelf || (x != 0 || y != 0)) {
                     const tile = this.get({x: pos.x + x, y: pos.y + y});
                     if (tile) result.push(tile);
                 }
@@ -361,7 +419,10 @@ function updateObject(obj, f = _ => {}) {
 const map = new TileMap(20, 20);
 
 map.get({x: 3, y: 3}).terrain = 'forest';
-map.get({x: 4, y: 3}).terrain = 'water';
+map.get({x: 4, y: 3}).terrain = 'forest';
+map.get({x: 5, y: 3}).terrain = 'forest';
+map.get({x: 6, y: 3}).terrain = 'forest';
+map.get({x: 6, y: 4}).terrain = 'forest';
 map.get({x: 4, y: 4}).terrain = 'water';
 map.get({x: 4, y: 5}).terrain = 'water';
 map.get({x: 5, y: 5}).terrain = 'mountain';
@@ -369,6 +430,7 @@ map.get({x: 5, y: 6}).terrain = 'mountain';
 map.get({x: 1, y: 1}).progress = 10;
 map.get({x: 8, y: 3}).createBuilding('farm');
 map.get({x: 6, y: 6}).createBuilding('woodcutter');
+map.get({x: 5, y: 4}).createBuilding('mine');
 
 
 
@@ -389,8 +451,8 @@ updateObject(player);
 
 game.createUnit({x: 9, y: 9}, 'cpu', 'peasant');
 game.createUnit({x: 5, y: 1}, 'cpu', 'peasant');
-game.createUnit({x: 6, y: 1}, 'cpu', 'peasant');
-game.createUnit({x: 7, y: 1}, 'cpu', 'peasant');
+// game.createUnit({x: 6, y: 1}, 'cpu', 'peasant');
+// game.createUnit({x: 7, y: 1}, 'cpu', 'peasant');
 
 
 
@@ -527,15 +589,23 @@ setInterval(() => {
             });
         }
     }
-}, 6000);
+}, 2000);
 
 
 function onUpdateUnit(unit) {
-    if (unit.kind == 'soldier') {
-        onUpdateSoldier(unit);
-    } else if (unit.player == 'cpu') {
-        // return onUpdateShip(unit);
-        return onUpdateNpc(unit);
+    try {
+        if (unit.kind == 'soldier') {
+            onUpdateSoldier(unit);
+        } else if (unit.player == 'cpu') {
+            // return onUpdateShip(unit);
+            return onUpdateNpc(unit);
+        }
+    } catch (e) {
+        console.log("!")
+        unit.reset();
+        setTimeout(() => {
+            onUpdateUnit(unit);
+        }, 100);
     }
 }
 
@@ -589,13 +659,18 @@ function onUpdateNpc(npc) {
                 return tile.has(npc.task.item) /*&& !map.neighbors(tile.pos).find(n => n.building)*/;
             });
             if (target) {
+                if (npc.path != null) {
+                    npc.path = null;
+                }
                 if(npc.approach(target.pos)) {
                     if (npc.take(npc.task.item)) {
+                        npc.path = null;
                         npc.state = 'bearing'
                     }
                 }
             } else {
-                npc.state = '';
+                npc.reset();
+                onUpdateNpc(npc);
                 // target =  map.locate(npc.pos, 10, tile => tile.terrain == 'forest');
                 // if (target) {
                 //     npc.target = {x: target.pos.x, y: target.pos.y + 1};
