@@ -378,7 +378,7 @@ class Game {
         this.onUpdateUnit = onUpdateUnit;
     }
     createUnit(pos, player, kind) {
-        const unit = new Unit({kind, player, pos});
+        const unit = new Unit({loop: cpuLoop(), kind, player, pos});
         updateObject(unit);
         this.units.push(unit);
         return unit;
@@ -597,11 +597,13 @@ function onUpdateUnit(unit) {
         if (unit.kind == 'soldier') {
             onUpdateSoldier(unit);
         } else if (unit.player == 'cpu') {
+            console.log("UNIY", unit.loop)
             // return onUpdateShip(unit);
-            return onUpdateNpc(unit);
+            return unit.loop.next();
+            // return onUpdateNpc(unit);
         }
     } catch (e) {
-        console.log("!")
+        console.error(e)
         unit.reset();
         setTimeout(() => {
             onUpdateUnit(unit);
@@ -724,7 +726,14 @@ function onUpdateShip(unit) {
     }
 
 }
-
+function* cpuLoop() {
+    let c = 0;
+    while (true) {
+        const task = game.tasks.shift();
+        console.log("cpu loop", c++, task);
+        yield;
+    }
+}
 setInterval(() => {
     if (gui.mode != 'pause')
         game.updateAi();
