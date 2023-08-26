@@ -378,7 +378,8 @@ class Game {
         this.onUpdateUnit = onUpdateUnit;
     }
     createUnit(pos, player, kind) {
-        const unit = new Unit({loop: cpuLoop(), kind, player, pos});
+        const unit = new Unit({kind, player, pos});
+        unit.loop = cpuLoop(unit);
         updateObject(unit);
         this.units.push(unit);
         return unit;
@@ -597,7 +598,6 @@ function onUpdateUnit(unit) {
         if (unit.kind == 'soldier') {
             onUpdateSoldier(unit);
         } else if (unit.player == 'cpu') {
-            console.log("UNIY", unit.loop)
             // return onUpdateShip(unit);
             return unit.loop.next();
             // return onUpdateNpc(unit);
@@ -726,11 +726,57 @@ function onUpdateShip(unit) {
     }
 
 }
-function* cpuLoop() {
+
+function* moveLoop(unit, target) {
+    const path = unit.findPath(target);
+    if (path) {
+        for (const part of path) {
+            unit.v = part.v;
+            unit.move();
+            unit.v.x = 0;
+            unit.v.y = 0;
+            yield;
+        }
+        return true;
+    }
+    gui.message(`path not found`);
+    return false;
+}
+
+function* cpuLoop(unit) {
     let c = 0;
     while (true) {
         const task = game.tasks.shift();
         console.log("cpu loop", c++, task);
+        switch (task?.type) {
+            case 'gather': {
+                const sourceTile = map.locate(unit.pos, 10, tile => {
+                    return tile.has(task.item) /*&& !map.neighbors(tile.pos).find(n => n.building)*/;
+                });
+                if (sourceTile) {
+                    if (yield* moveLoop(unit, sourceTile.pos)) {
+                        unit.take(task.item);
+                        yield* moveLoop(unit, task.target);
+                        unit.drop();
+                    }
+                }
+                break;
+            }
+            case 'build': {
+                if (yield* moveLoop(unit, task.tile.pos)) {
+                    updateObject(map.get(unit.pos), tile => {
+                        tile.createBuilding(task.building);
+                    });
+                }
+                break;
+            }
+            default:
+                unit.v.x = 0;
+                unit.v.y = 0;
+        }
+        unit.pos.x += unit.v.x;
+        unit.pos.y += unit.v.y;
+
         yield;
     }
 }
