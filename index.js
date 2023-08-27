@@ -160,7 +160,7 @@ class Unit {
     }
     take(token) {
         const tile = map.get(this.pos);
-        if (!tile || !tile.has()) return false;
+        if (!tile || !tile.has(token)) return false;
         updateObject(tile, tile => {
             this.item = tile.take(token);
         });
@@ -250,6 +250,7 @@ class Unit {
         return path;
     }
     reset() {
+        this.drop();
         this.state = '';
         this.task = null;
         this.path = null;
@@ -383,6 +384,10 @@ class Game {
         updateObject(unit);
         this.units.push(unit);
         return unit;
+    }
+    nextTask() {
+        const idx = ~~(Math.random() * this.tasks.length);
+        return this.tasks.splice(idx, 1)[0];
     }
     updateAi() {
         this.units.forEach(unit => {
@@ -667,8 +672,7 @@ function* moveLoop(unit, target) {
 function* cpuLoop(unit) {
     let c = 0;
     while (true) {
-        const task = game.tasks.shift();
-        console.log("cpu loop", c++, task);
+        const task = game.nextTask();
         switch (task?.type) {
             case 'gather': {
                 const sourceTile = map.locate(unit.pos, 10, tile => {
