@@ -235,19 +235,8 @@ class Unit {
                 }
             });
         }
-        console.error("not found TODO implementation", c);
+        console.error("not found", c);
         return;
-
-        let x = this.pos.x;
-        let y = this.pos.y;
-        let dir = {x: 0, y: 0};
-        do {
-            dir = this.computeDirection2({x, y}, target);
-            x += dir.x;
-            y += dir.y;
-            path.push({v: dir});
-        } while (dir.x != 0 || dir.y != 0);
-        return path;
     }
     reset() {
         this.drop();
