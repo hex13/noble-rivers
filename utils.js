@@ -18,6 +18,7 @@ function* border(center, radius) {
 
 
 function *radiate(center, maxRadius) {
+    yield center;
     for (let r = 1; r < maxRadius; r++) {
         for (const pt of border(center, r)) {
             yield pt;
