@@ -45,4 +45,7 @@ const buildings = {
     barracks: {
         produces: {kind: 'unit', item: products.soldier},
     },
+    market: {
+        produces: {kind: 'item', item: products.gold},
+    },
 }

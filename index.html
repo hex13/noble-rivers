@@ -168,7 +168,9 @@
    .tile.barracks .building {
       background: linear-gradient(to bottom, #ada, #88a);
    }
-
+   .tile.market .building {
+      background: linear-gradient(to bottom, #dddd33, #c09f2b);
+   }
    .token {
       animation: 0.8s infinite alternate token-animation;
    }
@@ -245,6 +247,10 @@
 
    .tile.barracks .building:before, .tile.construction-barracks:before  {
       content: 'barracks';
+   }
+
+   .tile.market .building:before, .tile.construction-market:before  {
+      content: 'market';
    }
 
    .unit {
