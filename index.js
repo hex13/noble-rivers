@@ -505,6 +505,13 @@ domEl.addEventListener('click', async e => {
         return;
     }
 
+    if (gui.mode == 'buy land') {
+        console.error("TODO for now buying land is free. make player pay for land");
+        updateObject(tile, tile => {
+            tile.player = 'player';
+        });
+        return;
+    }
 
     if (tile.player == 'player') {
         updateObject(tile, tile => {
