@@ -531,7 +531,17 @@ domEl.addEventListener('click', async e => {
     }
 
     if (gui.mode == 'buy land') {
-        console.error("TODO for now buying land is free. make player pay for land");
+        if (tile.player == 'cpu') {
+            alert(`Couldn't buy. This land is owned by ${tile.player}`);
+            return;
+        }
+        if (globals.player.treasury.gold < 1) {
+            alert(`Couldn't buy. You have no gold.`);
+            return;
+        }
+        updateObject(globals.player.treasury, treasury => {
+            treasury.gold -= 1;
+        });
         updateObject(tile, tile => {
             tile.player = 'player';
         });
