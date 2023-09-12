@@ -52,7 +52,11 @@ class Tile {
             ],
         };
     }
-    createBuilding(buildingType) {
+    createBuilding(buildingType, player) {
+        if (player != this.player) {
+            gui.message(`${player} can't build on land owned by ${this.player}`);
+            return;
+        }
         this.building = buildingType;
         this.progress = 100;
         const buildingMeta = buildings[buildingType];
@@ -425,9 +429,9 @@ map.get({x: 4, y: 5}).terrain = 'water';
 map.get({x: 5, y: 5}).terrain = 'mountain';
 map.get({x: 5, y: 6}).terrain = 'mountain';
 map.get({x: 1, y: 1}).progress = 10;
-map.get({x: 8, y: 3}).createBuilding('farm');
-map.get({x: 6, y: 6}).createBuilding('woodcutter');
-map.get({x: 5, y: 4}).createBuilding('mine');
+map.get({x: 8, y: 3}).createBuilding('farm', 'player');
+map.get({x: 6, y: 6}).createBuilding('woodcutter', 'player');
+map.get({x: 5, y: 4}).createBuilding('mine', 'player');
 
 
 
@@ -502,11 +506,15 @@ domEl.addEventListener('click', async e => {
     }
 
 
-    updateObject(tile, tile => {
-        const buildingKind = gui.mode;
-        tile.construction = buildingKind;
-        game.tasks.push({type: 'build', tile, building: buildingKind})
-    });
+    if (tile.player == 'player') {
+        updateObject(tile, tile => {
+            const buildingKind = gui.mode;
+            tile.construction = buildingKind;
+            game.tasks.push({type: 'build', tile, building: buildingKind})
+        });
+    } else {
+        alert(`You can only build on your land. And this land belongs to ${tile.player}.`);
+    }
 
     // map.neighbors(pos).forEach(tile => {
     //     updateObject(tile, tile => tile.terrain = 'forest');
@@ -529,7 +537,7 @@ const keyMap = {
         const tile = map.get(obj.pos);
         if (tile) {
             updateObject(tile, tile => {
-                tile.createBuilding('farm');
+                tile.createBuilding('farm', 'player');
             });
         }
     },
