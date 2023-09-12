@@ -34,7 +34,7 @@ const products = {
 
 const buildings = {
     farm: {
-        produces: {kind: 'item', item: products.food},
+        produces: {kind: 'item', item: products.food, near: 'water'},
     },
     woodcutter: {
         produces: {kind: 'item', item: products.wood, near: 'forest'},
