@@ -103,7 +103,14 @@ class Tile {
 
             if (ok) {
                 if (this.produces.kind == 'item') {
-                    this.drop(this.produces.item.name);
+                    if (this.produces.item.name.startsWith('global-')) {
+                        const name = this.produces.item.name.split('global-')[1];
+                        updateObject(globals[this.player].treasury, treasury => {
+                            treasury[name] += 1;
+                        });
+                    } else {
+                        this.drop(this.produces.item.name);
+                    }
                 } else if (this.produces.kind == 'unit') {
                     game.createUnit(this.pos, 'cpu', this.produces.item.name);
                 }
@@ -464,20 +471,23 @@ setTimeout(() => {
 }, 1000);
 
 
-// const globals = {
-//     player: {
-//     }
-// }
-const treasury = {
-    gold: 3,
-    createParams() {
-        return {
-            classes: ['gui-treasury'],
-            text: `treasury: ${this.gold} gold`,
+const createGlobals = () => ({
+    treasury: {
+        gold: 3,
+        createParams() {
+            return {
+                classes: ['gui-treasury'],
+                text: `treasury: ${this.gold} gold`,
+            }
         }
-    }
+    },
+});
+
+const globals = {
+    player: createGlobals(),
+    cpu: createGlobals(),
 };
-updateObject(treasury);
+updateObject(globals.player.treasury);
 
 
 const detailEl = document.querySelector('.gui-detail');

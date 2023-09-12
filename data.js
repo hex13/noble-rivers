@@ -6,7 +6,7 @@ const products = {
         }
     },
     globalGold: {
-        name: 'globalGold',
+        name: 'global-gold',
         requires: {
             gold: 1,
         }
