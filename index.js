@@ -364,7 +364,7 @@ function updateEl(el, params) {
         }
     }
 
-    // el.innerText = params.text;
+    if (typeof params.text == 'string') el.innerText = params.text;
 }
 
 class Game {
@@ -463,6 +463,21 @@ setTimeout(() => {
     });
 }, 1000);
 
+
+// const globals = {
+//     player: {
+//     }
+// }
+const treasury = {
+    gold: 3,
+    createParams() {
+        return {
+            classes: ['gui-treasury'],
+            text: `treasury: ${this.gold} gold`,
+        }
+    }
+};
+updateObject(treasury);
 
 
 const detailEl = document.querySelector('.gui-detail');
