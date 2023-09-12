@@ -169,7 +169,10 @@
       background: linear-gradient(to bottom, #ada, #88a);
    }
    .tile.market .building {
-      background: linear-gradient(to bottom, #dddd33, #c09f2b);
+      background: linear-gradient(to bottom, #dddd33 0%, #cbaa17 40%, #e763b7 100%);
+   }
+   .tile.treasury .building {
+      background: linear-gradient(to bottom, #dddd33, #bebe1f);
    }
    .token {
       animation: 0.8s infinite alternate token-animation;
@@ -251,6 +254,10 @@
 
    .tile.market .building:before, .tile.construction-market:before  {
       content: 'market';
+   }
+
+   .tile.treasury .building:before, .tile.construction-treasury:before  {
+      content: 'treasury';
    }
 
    .tile.owner-none {

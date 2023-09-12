@@ -60,7 +60,7 @@ class Tile {
         this.building = buildingType;
         this.progress = 100;
         const buildingMeta = buildings[buildingType];
-        this.produces = {...buildingMeta.produces, resources: {}};
+        if (buildingMeta.produces) this.produces = {...buildingMeta.produces, resources: {}};
         this.construction = '';
     }
     destroyBuilding() {

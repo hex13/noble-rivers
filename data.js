@@ -5,6 +5,12 @@ const products = {
             food: 2,
         }
     },
+    globalGold: {
+        name: 'globalGold',
+        requires: {
+            gold: 1,
+        }
+    },
     wood: {
         name: 'wood',
         requires: {
@@ -47,5 +53,8 @@ const buildings = {
     },
     market: {
         produces: {kind: 'item', item: products.gold},
+    },
+    treasury: {
+        produces: {kind: 'item', item: products.globalGold},
     },
 }
