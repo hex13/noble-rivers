@@ -450,8 +450,8 @@ const player = new Unit({pos: {x: 6, y: 3}, classes: ['soldier']});
 updateObject(player);
 
 
-game.createUnit({x: 9, y: 9}, 'cpu', 'peasant');
-game.createUnit({x: 5, y: 1}, 'cpu', 'peasant');
+game.createUnit({x: 9, y: 9}, 'player', 'peasant');
+game.createUnit({x: 5, y: 1}, 'player', 'peasant');
 // game.createUnit({x: 6, y: 1}, 'cpu', 'peasant');
 // game.createUnit({x: 7, y: 1}, 'cpu', 'peasant');
 
@@ -601,7 +601,7 @@ function onUpdateUnit(unit) {
     try {
         if (unit.kind == 'soldier') {
             onUpdateSoldier(unit);
-        } else if (unit.player == 'cpu') {
+        } else {
             // return onUpdateShip(unit);
             return unit.loop.next();
             // return onUpdateNpc(unit);
@@ -689,7 +689,7 @@ function* cpuLoop(unit) {
             case 'build': {
                 if (yield* moveLoop(unit, task.tile.pos)) {
                     updateObject(map.get(unit.pos), tile => {
-                        tile.createBuilding(task.building);
+                        tile.createBuilding(task.building, unit.player);
                     });
                 }
                 break;
