@@ -25,7 +25,7 @@ class Tile {
         this.visited = 0;
         this.producingProgress = 0;
         this.construction = '';
-        this.player = pos.x < 10 && pos.y < 10? 'player' : pos.x > 15? 'cpu' : 'none';
+        this.player = pos.x < 10 && pos.y < 10? 'player' : pos.x >= 10 && pos.y >= 10? 'cpu' : 'none';
     }
     setPlayer(player) {
         updateObject(this.map.stats, stats => {
