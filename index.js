@@ -565,7 +565,11 @@ domEl.addEventListener('click', async e => {
 
     if (gui.mode == 'buy land') {
         if (tile.player == 'cpu') {
-            alert(`Couldn't buy. This land is owned by ${tile.player}`);
+            alert(`Couldn't buy. This land is owned by ${tile.player}.`);
+            return;
+        }
+        if (tile.player == 'player') {
+            alert(`You already own this tile.`);
             return;
         }
         if (globals.player.treasury.gold < 1) {
