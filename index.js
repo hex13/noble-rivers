@@ -860,7 +860,13 @@ function createRiver(source) {
         if (pos) {
             createRiver(pos)
         }
-
+    }
+    for (let i = 0; i < 20; i++) {
+        const pos = map.randomPoint();
+        const tile = map.get(pos);
+        updateObject(tile, tile => {
+            if (tile.terrain != 'water') tile.terrain = 'forest';
+        });
     }
 }
 
