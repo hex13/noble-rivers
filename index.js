@@ -48,6 +48,7 @@ class Tile {
                 this.visited >= 30? 'visited-many' : this.visited >= 20? 'visited-twice' : this.visited >= 6? 'visited' : '',
                 this.construction? `construction-${this.construction}` : '',
             ],
+            elevation: this.elevation,
             progress: this.progress,
             token: this.items()[0],
             producingProgress: this.producingProgress,
@@ -325,10 +326,30 @@ class Unit {
 
 
 class TileMap {
+    randomPoint() {
+        return {x: ~~(Math.random() * this.width), y: ~~(Math.random() * this.height)};
+    }
     constructor(w, h) {
         this.width = w;
         this.height = h;
-        const data = this.data = [...Array(w * h)].map((_, i) => new Tile({x: i % w, y: ~~(i / w)}, this));
+        const maxima = [{x: ~~(this.width / 2), y: ~~(this.height / 2), elevation: 50}];
+        for (let i = 0; i < 3; i++) {
+            maxima.push({...this.randomPoint(), elevation: 50});
+        }
+
+        const data = this.data = [...Array(w * h)].map((_, i) => {
+            const pos = {x: i % w, y: ~~(i / w)};
+            const tile = new Tile(pos, this);
+            let z = 0;
+            tile.elevation = 0;
+            maxima.forEach(({elevation, x, y}) => {
+                let distSq = (pos.x - x) ** 2 + (pos.y - y) **2;
+                z += Math.max(0, elevation - distSq);
+            });
+            tile.elevation = z / maxima.length;
+
+            return tile;
+        });
         this.stats = {
             owners: {
                 player: 0,
@@ -354,6 +375,9 @@ class TileMap {
         return pos.y * this.width + pos.x;
     }
     get(pos) {
+        if (pos.x < 0 || pos.y < 0 || pos.x >= this.width || pos.y >= this.height) {
+            return null;
+        }
         return this.data[this.getIndex(pos)];
     }
     locate(center, maxRadius, check) {
@@ -397,7 +421,8 @@ function updateEl(el, params) {
             el.__productProgress.innerText = params.produces.item.name;
         }
     }
-
+    const z = params.elevation;
+    // el.style.background = `rgb(255 ${z > 10? (z - 10) * 20 : 0} 0 / ${z * 0.04})`;
     if (typeof params.text == 'string') el.innerText = params.text;
 }
 
@@ -458,8 +483,6 @@ map.get({x: 4, y: 3}).terrain = 'forest';
 map.get({x: 5, y: 3}).terrain = 'forest';
 map.get({x: 6, y: 3}).terrain = 'forest';
 map.get({x: 6, y: 4}).terrain = 'forest';
-map.get({x: 4, y: 4}).terrain = 'water';
-map.get({x: 4, y: 5}).terrain = 'water';
 map.get({x: 5, y: 5}).terrain = 'mountain';
 map.get({x: 5, y: 6}).terrain = 'mountain';
 map.get({x: 1, y: 1}).progress = 10;
@@ -492,13 +515,6 @@ game.createUnit({x: 5, y: 1}, 'player', 'peasant');
 // game.createUnit({x: 6, y: 1}, 'cpu', 'peasant');
 // game.createUnit({x: 7, y: 1}, 'cpu', 'peasant');
 
-
-
-setTimeout(() => {
-    updateObject(map.get({x: 4, y: 6}), tile =>{
-        tile.terrain = 'water';
-    });
-}, 1000);
 
 
 const createGlobals = () => ({
@@ -784,3 +800,59 @@ setInterval(() => {
 const menuEl = document.querySelector('.gui-menu');
 
 const gui = createGui({ buildings });
+
+function createRiver(source) {
+    let curr = map.get(source); 
+    const visited = {};
+    for (let i = 0; i < 10000 && curr; i++) {
+        visited[curr.pos.x + ',' + curr.pos.y] = true;
+        curr.terrain = 'water';
+        let maxDiff = -1;
+        let candidate = null;
+        map.neighbors(curr.pos, false).forEach((n, i, arr) => {
+            const diff = curr.elevation - n.elevation;
+            if (diff > maxDiff && !visited[n.pos.x + ',' + n.pos.y]) {
+                maxDiff = diff;
+                candidate = n;
+            }
+        });
+        curr = candidate;
+    }
+
+}
+{
+    let max = -Infinity;
+    let maxPos;
+    const highlands = [];
+    map.data.forEach(tile => {
+        if (tile.elevation > max) {
+            max = tile.elevation;
+            maxPos = tile.pos;
+        }
+    });
+
+    map.data.forEach(tile => {
+        if (
+            (tile.elevation > 8 && (Math.random() < 0.1))
+            || (tile.elevation > (maxPos - 8) && (Math.random() < 0.5))
+        ) {
+            updateObject(tile, tile => {
+                tile.terrain = 'mountain';
+            });
+        }
+        if (tile.elevation > max - 10) {
+            highlands.push(tile.pos);
+        }
+
+    });
+
+    createRiver(maxPos)
+    for (let i = 0; i < 2; i++) {
+        const pos = highlands[~~(Math.random() * highlands.length)];
+        if (pos) {
+            createRiver(pos)
+        }
+
+    }
+}
+
