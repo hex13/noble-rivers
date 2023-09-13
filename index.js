@@ -497,11 +497,8 @@ for (let y = 0; y < map.height; y++) {
     }
 }
 
-const player = new Unit({pos: {x: 6, y: 3}, classes: ['soldier']});
-updateObject(player);
 
 updateObject(map.stats);
-
 
 
 const createGlobals = () => ({
@@ -601,67 +598,6 @@ domEl.addEventListener('click', async e => {
 
 });
 
-const keyMap = {
-    ArrowLeft: {x: -1, y: 0},
-    ArrowRight: {x: 1, y: 0},
-    ArrowUp: {x: 0, y: -1},
-    ArrowDown: {x: 0, y: 1},
-    KeyT(obj) {
-        obj.take();
-    },
-    KeyD(obj) {
-        obj.drop();
-    },
-    KeyB(obj) {
-        const tile = map.get(obj.pos);
-        if (tile) {
-            updateObject(tile, tile => {
-                tile.createBuilding('farm', 'player');
-            });
-        }
-    },
-    KeyA(obj) {
-        const tile = map.get(obj.pos);
-        if (tile) {
-            updateObject(tile, tile => {
-                tile.destroyBuilding();
-            });
-        }
-    },
-    KeyU(obj) {
-        const tile = map.get(obj.pos);
-        tile.produces = {kind: 'unit'};
-    },
-    KeyW(obj) {
-        const tile = map.get(obj.pos);
-        tile.produces = {kind: 'item', item: products.wood, resources: {}};
-    },
-    KeyF(obj) {
-        const tile = map.get(obj.pos);
-        updateObject(tile, tile => tile.terrain = 'forest');
-        // tile.produces = {kind: 'item', item: products.food, resources: {}};
-    },
-    KeyW(obj) {
-        const tile = map.get(obj.pos);
-        updateObject(tile, tile => tile.terrain = 'water');
-        // tile.produces = {kind: 'item', item: products.food, resources: {}};
-    },
-};
-
-document.addEventListener('keydown', e => {
-    if (Object.hasOwn(keyMap, e.code)) {
-        e.preventDefault();
-        let updater = keyMap[e.code];
-        if (typeof updater != 'function') {
-            const d = updater;
-            updater = obj => {
-                obj.pos.x += d.x;
-                obj.pos.y += d.y;
-            };
-        }
-        updateObject(player, updater);
-    }
-});
 
 setInterval(() => {
     game.counter = (game.counter || 0) + 1;
