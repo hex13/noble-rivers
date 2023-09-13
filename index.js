@@ -136,7 +136,7 @@ class Tile {
                     const delta = computeObjectsDelta(this.produces.item.requires, this.produces.resources);
                     const totalItemCount = computeObjectsDelta(this.produces.item.requires, {}).length;
                     this.producingProgress = ~~(100 - (delta.length / totalItemCount) * 100);
-                    const tasks = delta.map(item => ({t: game.counter, volatile: true, item, type: 'gather', target: {x: this.pos.x - 1, y: this.pos.y}}));
+                    const tasks = delta.map(item => ({player: this.player, t: game.counter, volatile: true, item, type: 'gather', target: {x: this.pos.x - 1, y: this.pos.y}}));
                     this.tasks = tasks;
                     game.tasks.push(...tasks);
                 }
@@ -445,9 +445,10 @@ class Game {
         this.units.push(unit);
         return unit;
     }
-    nextTask() {
-        const idx = ~~(Math.random() * this.tasks.length);
-        return this.tasks.splice(idx, 1)[0];
+    nextTask(player) {
+        const tasks = this.tasks.filter(task => task.player == player);
+        const idx = ~~(Math.random() * tasks.length);
+        return tasks.splice(idx, 1)[0];
     }
     updateAi() {
         this.units.forEach(unit => {
@@ -584,7 +585,7 @@ domEl.addEventListener('click', async e => {
         updateObject(tile, tile => {
             const buildingKind = gui.mode;
             tile.construction = buildingKind;
-            game.tasks.push({type: 'build', tile, building: buildingKind})
+            game.tasks.push({type: 'build', tile, building: buildingKind, player: tile.player})
         });
     } else {
         alert(`You can only build on your land. And this land belongs to ${tile.player}.`);
@@ -754,7 +755,7 @@ function* moveLoop(unit, target) {
 function* cpuLoop(unit) {
     let c = 0;
     while (true) {
-        const task = game.nextTask();
+        const task = game.nextTask(unit.player);
         if (!task) {
             yield;
             continue;
@@ -801,6 +802,26 @@ setInterval(() => {
     if (gui.mode != 'pause')
         game.updateAi();
 }, 800);
+
+setInterval(() => {
+    const player = 'cpu';
+    const freeTiles = map.data.filter(tile => tile.terrain == 'grass' && tile.player == player);
+    const tile = freeTiles[~~(freeTiles.length * Math.random())];
+    if (tile) {
+        let kind = ['market', 'barracks', 'treasury'][~~(Math.random() * 3)];
+        map.neighbors(tile.pos).forEach(n => {
+            if (n.terrain== 'water') {
+                kind = 'farm';
+            } else if (n.terrain == 'mountain') {
+                kind = 'mine';
+            } else if (n.terrain == 'forest') {
+                kind = 'woodcutter';
+            }
+        });
+        game.tasks.push({player, type: 'build', tile, building: kind});
+    }
+}, 5000);
+
 
 const menuEl = document.querySelector('.gui-menu');
 
