@@ -136,7 +136,9 @@ class Tile {
                     const delta = computeObjectsDelta(this.produces.item.requires, this.produces.resources);
                     const totalItemCount = computeObjectsDelta(this.produces.item.requires, {}).length;
                     this.producingProgress = ~~(100 - (delta.length / totalItemCount) * 100);
-                    game.tasks.push(...delta.map(item => ({volatile: true, item, type: 'gather', target: {x: this.pos.x - 1, y: this.pos.y}})));
+                    const tasks = delta.map(item => ({t: game.counter, volatile: true, item, type: 'gather', target: {x: this.pos.x - 1, y: this.pos.y}}));
+                    this.tasks = tasks;
+                    game.tasks.push(...tasks);
                 }
             }
         }
@@ -677,6 +679,7 @@ document.addEventListener('keydown', e => {
 });
 
 setInterval(() => {
+    game.counter = (game.counter || 0) + 1;
     game.tasks = game.tasks.filter(task => !task.volatile);
     gui.clearMessages();
     for (let y = 0; y < map.height; y++) {
@@ -695,15 +698,22 @@ function onUpdateUnit(unit) {
             onUpdateSoldier(unit);
         } else {
             // return onUpdateShip(unit);
-            return unit.loop.next();
+            const n = unit.loop.next();
+            if (n.value instanceof Error) {
+                unit.loop = cpuLoop(unit);
+                unit.reset();
+                setTimeout(() => {
+                    onUpdateUnit(unit);
+                }, 100);
+            }
             // return onUpdateNpc(unit);
         }
     } catch (e) {
         console.error(e)
         unit.reset();
-        setTimeout(() => {
-            onUpdateUnit(unit);
-        }, 100);
+        // setTimeout(() => {
+        //     onUpdateUnit(unit);
+        // }, 100);
     }
 }
 
@@ -756,7 +766,8 @@ function* moveLoop(unit, target) {
         }
         return true;
     }
-    gui.message(`path not found`);
+    yield new Error(`path not found to ${target.x}, ${target.y}`);
+    
     return false;
 }
 
@@ -764,6 +775,7 @@ function* cpuLoop(unit) {
     let c = 0;
     while (true) {
         const task = game.nextTask();
+        gui.message(unit.id + ", task " + task?.type);
         switch (task?.type) {
             case 'gather': {
                 const sourceTile = map.locate(unit.pos, 10, tile => {
@@ -771,10 +783,14 @@ function* cpuLoop(unit) {
                 });
                 if (sourceTile) {
                     if (yield* moveLoop(unit, sourceTile.pos)) {
-                        unit.take(task.item);
+                        if (!unit.take(task.item)) {
+                            yield new Error(`${task.item} not on tile`);
+                        }
                         yield* moveLoop(unit, task.target);
                         unit.drop();
                     }
+                } else {
+
                 }
                 break;
             }
@@ -787,6 +803,7 @@ function* cpuLoop(unit) {
                 break;
             }
             default:
+                console.log("not handled", task);
                 unit.v.x = 0;
                 unit.v.y = 0;
         }
