@@ -76,7 +76,8 @@
       background: radial-gradient(rgb(64, 138, 64), rgb(57, 125, 57), rgb(69, 111, 69));
    }
    .water {
-      background-image: linear-gradient(to bottom, #aaccff, #88bbff);
+      /* background-image: linear-gradient(to bottom, #aaccff, #88bbff); */
+      background: linear-gradient(to bottom, #83aadd 0%, #afc2ec 20%, #83aadd 80%, #afc2ec 90%, #83aadd 100%);
       background-position: 0 0 ;
       /* animation: 2s infinite alternate a; */
    }
@@ -267,14 +268,14 @@
    }
 
    .tile.owner-player {
-      box-shadow: inset -1px -1px 2px rgb(0 0 255 / 0.2),
+      box-shadow: inset -1px -1px 2px rgb(0 0 200 / 0.3),
                inset -2px -2px 2px rgb(0 0 255 / 0.2);
       border: 3px solid rgb(0 0 255 / 0.2);
    }
    .tile.owner-cpu {
       /* filter: brightness(80%) saturate(120%) hue-rotate(40deg); */
       /* border: 2px solid rgb(255 100 100 / 0.18); */
-      border: 3px solid rgb(255 0 0 / 0.2);
+      border: 3px solid rgb(255 0 0 / 0.3);
       box-shadow: inset -1px -1px 2px rgb(255 200 200 / 0.4),
                inset -2px -2px 2px rgb(255 0 0 / 0.5);
    }
