@@ -171,13 +171,14 @@ class Tile {
         this.visited = Math.max(0, this.visited - 1);
     }
 }
-
+let id = 0;
 class Unit {
     constructor(props) {
         this.v = {x: 0, y: 0};
         this.target = null;
         Object.assign(this, props);
         this.pos = props.pos? {...props.pos} : {x: 0, y: 0};
+        this.id = ++id;
     }
     take(token) {
         const tile = map.get(this.pos);
