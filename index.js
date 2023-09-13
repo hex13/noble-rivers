@@ -480,21 +480,8 @@ function updateObject(obj, f = _ => {}) {
     updateEl(obj.el, obj.createParams());
 }
 
-
-
 const map = new TileMap(20, 20);
 
-map.get({x: 3, y: 3}).terrain = 'forest';
-map.get({x: 4, y: 3}).terrain = 'forest';
-map.get({x: 5, y: 3}).terrain = 'forest';
-map.get({x: 6, y: 3}).terrain = 'forest';
-map.get({x: 6, y: 4}).terrain = 'forest';
-map.get({x: 5, y: 5}).terrain = 'mountain';
-map.get({x: 5, y: 6}).terrain = 'mountain';
-map.get({x: 1, y: 1}).progress = 10;
-map.get({x: 8, y: 3}).createBuilding('farm', 'player');
-map.get({x: 6, y: 6}).createBuilding('woodcutter', 'player');
-map.get({x: 5, y: 4}).createBuilding('mine', 'player');
 
 
 
