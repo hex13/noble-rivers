@@ -831,7 +831,7 @@ function createRiver(source) {
 
 function initPlayer(player) {
     const freeTiles = map.data.filter(tile => tile.terrain == 'grass' && tile.player == player);
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
         const tile = freeTiles[~~(freeTiles.length * Math.random())];
         game.createUnit(tile.pos, player, 'peasant');
     }
