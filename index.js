@@ -755,6 +755,10 @@ function* cpuLoop(unit) {
     let c = 0;
     while (true) {
         const task = game.nextTask();
+        if (!task) {
+            yield;
+            continue;
+        }
         gui.message(unit.id + ", task " + task?.type);
         switch (task?.type) {
             case 'gather': {
