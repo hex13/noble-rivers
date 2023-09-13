@@ -27,6 +27,13 @@ class Tile {
         this.construction = '';
         this.player = pos.x < 10 && pos.y < 10? 'player' : pos.x > 15? 'cpu' : 'none';
     }
+    setPlayer(player) {
+        updateObject(this.map.stats, stats => {
+            stats.owners[this.player] -= 1;
+            stats.owners[player] += 1;
+        });
+        this.player = player;
+    }
     createParams() {
         return {
             ...createParams(this),
@@ -321,7 +328,27 @@ class TileMap {
     constructor(w, h) {
         this.width = w;
         this.height = h;
-        this.data = [...Array(w * h)].map((_, i) => new Tile({x: i % w, y: ~~(i / w)}, this));
+        const data = this.data = [...Array(w * h)].map((_, i) => new Tile({x: i % w, y: ~~(i / w)}, this));
+        this.stats = {
+            owners: {
+                player: 0,
+                cpu: 0,
+                none: 0,
+            },
+            createParams() {
+                const text = 'owners - ' + Object.entries(this.owners)
+                    .map(([owner, amount]) => `${owner}: ${~~(amount / data.length * 100)}%`)
+                    // .map(([owner, amount]) => `${owner}: ${amount}`)
+                    .join(' ');
+                return {
+                    classes: ['gui-owners'],
+                    text,
+                }
+            }
+        }
+        this.data.forEach(tile => {
+            this.stats.owners[tile.player] += 1;
+        });
     }
     getIndex(pos) {
         return pos.y * this.width + pos.x;
@@ -456,6 +483,9 @@ for (let y = 0; y < map.height; y++) {
 const player = new Unit({pos: {x: 6, y: 3}, classes: ['soldier']});
 updateObject(player);
 
+updateObject(map.stats);
+
+
 
 game.createUnit({x: 9, y: 9}, 'player', 'peasant');
 game.createUnit({x: 5, y: 1}, 'player', 'peasant');
@@ -543,7 +573,7 @@ domEl.addEventListener('click', async e => {
             treasury.gold -= 1;
         });
         updateObject(tile, tile => {
-            tile.player = 'player';
+            tile.setPlayer('player');
         });
         return;
     }
