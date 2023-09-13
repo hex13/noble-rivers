@@ -93,7 +93,7 @@ class Tile {
             let ok = true;
             let nearCondition = this.produces.near? false : true;
             this.map.neighbors(this.pos).forEach((n) => {
-                nearCondition ||= produces.near == n.terrain;
+                nearCondition = nearCondition || (produces.near == n.terrain);
                 Object.keys(item.requires).forEach(token => {
                     if (n.has(token) && item.requires[token] > (produces.resources[token] || 0)) {
                         const gatheredBefore = produces.resources[token] || 0;
