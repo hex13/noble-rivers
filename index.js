@@ -760,7 +760,7 @@ function* cpuLoop(unit) {
             yield;
             continue;
         }
-        gui.message(unit.id + ", task " + task?.type);
+        // gui.message(unit.id + ", task " + task?.type);
         switch (task?.type) {
             case 'gather': {
                 const sourceTile = map.locate(unit.pos, 10, tile => {
