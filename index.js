@@ -352,7 +352,7 @@ class TileMap {
                 let distSq = (pos.x - x) ** 2 + (pos.y - y) **2;
                 z += Math.max(0, elevation - distSq);
             });
-            tile.elevation = z / maxima.length;
+            tile.elevation = z / maxima.length + pos.y;
 
             return tile;
         });
@@ -428,7 +428,7 @@ function updateEl(el, params) {
         }
     }
     const z = params.elevation;
-    // el.style.background = `rgb(255 ${z > 10? (z - 10) * 20 : 0} 0 / ${z * 0.04})`;
+    // el.style.background = `rgb(255 ${z > 10? (z - 10) * 10 : 0} 0 / ${z * 0.04})`;
     if (typeof params.text == 'string') el.innerText = params.text;
 }
 
@@ -855,7 +855,7 @@ function createRiver(source) {
     });
 
     createRiver(maxPos)
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 1; i++) {
         const pos = highlands[~~(Math.random() * highlands.length)];
         if (pos) {
             createRiver(pos)
