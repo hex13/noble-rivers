@@ -252,7 +252,7 @@ class Unit {
             }
             const neighbors = map.neighbors(node.pos, false);
             neighbors.forEach(n => {
-                if (n.terrain != 'grass') return;
+                if (n.terrain != 'grass' && n.terrain != 'bridge') return;
                 const key = n.pos.x + ',' + n.pos.y;
                 if (!visited[key]) {
                     visited[key] = true;
@@ -807,7 +807,7 @@ function createRiver(source) {
     const visited = {};
     for (let i = 0; i < 10000 && curr; i++) {
         visited[curr.pos.x + ',' + curr.pos.y] = true;
-        curr.terrain = 'water';
+        curr.terrain = Math.random() < 0.15? 'bridge' : 'water';
         let maxDiff = -1;
         let candidate = null;
         map.neighbors(curr.pos, false).forEach((n, i, arr) => {

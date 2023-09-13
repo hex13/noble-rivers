@@ -75,11 +75,21 @@
    .forest {
       background: radial-gradient(rgb(64, 138, 64), rgb(57, 125, 57), rgb(69, 111, 69));
    }
-   .water {
+   .water, .bridge {
       /* background-image: linear-gradient(to bottom, #aaccff, #88bbff); */
       background: linear-gradient(to bottom, #83aadd 0%, #afc2ec 20%, #83aadd 80%, #afc2ec 90%, #83aadd 100%);
       background-position: 0 0 ;
       /* animation: 2s infinite alternate a; */
+   }
+   .bridge:after {
+      content: '';
+      position: absolute;
+      background: repeating-linear-gradient(#a35934 0, #ba704b 3px, #bb7f61 4px);
+      width: 80px;
+      height: 80px;
+      left: 10px;
+      top: 10px;
+      border-radius: 10%;
    }
    @keyframes a {
       0% {
