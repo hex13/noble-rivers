@@ -503,13 +503,6 @@ updateObject(map.stats);
 
 
 
-game.createUnit({x: 9, y: 9}, 'player', 'peasant');
-game.createUnit({x: 5, y: 1}, 'player', 'peasant');
-// game.createUnit({x: 6, y: 1}, 'cpu', 'peasant');
-// game.createUnit({x: 7, y: 1}, 'cpu', 'peasant');
-
-
-
 const createGlobals = () => ({
     treasury: {
         gold: 3,
@@ -870,3 +863,14 @@ function createRiver(source) {
     }
 }
 
+
+function initPlayer(player) {
+    const freeTiles = map.data.filter(tile => tile.terrain == 'grass' && tile.player == player);
+    for (let i = 0; i < 2; i++) {
+        const tile = freeTiles[~~(freeTiles.length * Math.random())];
+        game.createUnit(tile.pos, player, 'peasant');
+    }
+}
+
+initPlayer('player');
+initPlayer('cpu');
